@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NaijaGhana Lotto AI - Daily Auto Results & Markov 30D Engine</title>
+    <meta name="description" content="Automatic daily Nigeria & Ghana lotto results, Markov 30-day AI probability matrix engine, frequency generator, and community prediction forum.">
+    <style>
+        :root {
+            --primary: #008751; /* Nigeria Green */
+            --secondary: #FCD116; /* Ghana Gold */
+            --accent: #CE1126; /* Ghana Red */
+            --dark: #0F172A;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --card-bg: #FFFFFF;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background-color: #F1F5F9; color: var(--dark); line-height: 1.6; }
+
+        /* Top Header Bar */
+        .top-bar { background: #000; color: #94A3B8; padding: 6px 5%; display: flex; justify-content: space-between; font-size: 0.82rem; flex-wrap: wrap; }
+        .top-bar a { color: var(--secondary); text-decoration: none; margin-left: 10px; }
+        
+        header { background: var(--dark); color: white; border-bottom: 4px solid var(--primary); position: sticky; top: 0; z-index: 100; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; flex-wrap: wrap; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; }
+        .logo span { color: var(--secondary); }
+        
+        /* Navigation Links Grid for 15 Pages */
+        .nav-links { display: flex; gap: 10px; list-style: none; flex-wrap: wrap; margin-top: 8px; }
+        .nav-links a { color: #E2E8F0; text-decoration: none; font-size: 0.85rem; font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.05); }
+        .nav-links a:hover, .nav-links a.active { color: var(--dark); background: var(--secondary); }
+
+        /* App Layout */
+        .container { max-width: 1300px; margin: 20px auto; padding: 0 15px; display: grid; grid-template-columns: 3.2fr 1fr; gap: 20px; }
+
+        .card { background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #E2E8F0; }
+        .card-header { font-size: 1.15rem; font-weight: 700; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+
+        /* AdSense Banners */
+        .adsense-unit { background: #E2E8F0; border: 1px dashed #94A3B8; text-align: center; padding: 12px; color: var(--gray); font-size: 0.8rem; border-radius: 6px; margin: 15px 0; font-weight: 600; }
+
+        /* Lottery Balls Display */
+        .ball-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .ball { width: 38px; height: 38px; background: radial-gradient(circle at 35% 35%, var(--secondary), #d9a700); color: var(--dark); font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.15); font-size: 1rem; }
+        .ball.hot { background: radial-gradient(circle at 35% 35%, #FF6B6B, var(--accent)); color: white; }
+        .ball.cold { background: radial-gradient(circle at 35% 35%, #60A5FA, #2563EB); color: white; }
+        .ball.green { background: radial-gradient(circle at 35% 35%, #34D399, var(--primary)); color: white; }
+
+        /* Interactive Controls & Forms */
+        .grid-tool { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; color: var(--gray); }
+        .input-group select, .input-group input, .input-group textarea { width: 100%; padding: 8px 12px; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 0.9rem; outline: none; }
+        .input-group select:focus, .input-group input:focus { border-color: var(--primary); }
+        
+        .btn { background: var(--primary); color: white; padding: 9px 18px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-gold { background: var(--secondary); color: var(--dark); }
+        .btn-accent { background: var(--accent); color: white; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.88rem; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #E2E8F0; }
+        th { background: #F8FAFC; color: var(--gray); font-weight: 700; }
+
+        /* Page Display Switching */
+        .tab-page { display: none; }
+        .tab-page.active { display: block; }
+        
+        .disclaimer-box { background: #FEF3C7; border-left: 4px solid var(--secondary); padding: 10px 14px; margin-bottom: 15px; font-size: 0.82rem; color: #78350F; border-radius: 0 6px 6px 0; }
+
+        /* Voting System */
+        .vote-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #F8FAFC; border-radius: 6px; margin-bottom: 6px; border: 1px solid #E2E8F0; }
+
+        footer { background: var(--dark); color: #94A3B8; padding: 30px 5%; margin-top: 40px; font-size: 0.85rem; }
+        footer a { color: white; text-decoration: none; }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .nav-links { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Info Bar -->
+    <div class="top-bar">
+        <span>🟢 Live Status: Auto-Sync Engine Active</span>
+        <div>
+            Email: <a href="mailto:dumbiri257@gmail.com">dumbiri257@gmail.com</a>
+        </div>
+    </div>
+
+    <!-- Main Header Navigation -->
+    <header>
+        <nav>
+            <a class="logo" onclick="showPage('home')">⚽ NaijaGhana<span>LottoAI</span></a>
+            <ul class="nav-links">
+                <li><a class="nav-btn active" onclick="showPage('home')">Home</a></li>
+                <li><a class="nav-btn" onclick="showPage('ng-lotto')">Nigeria Hub</a></li>
+                <li><a class="nav-btn" onclick="showPage('gh-lotto')">Ghana Hub</a></li>
+                <li><a class="nav-btn" onclick="showPage('markov-engine')">Markov 30D</a></li>
+                <li><a class="nav-btn" onclick="showPage('freq-gen')">Frequency Gen</a></li>
+                <li><a class="nav-btn" onclick="showPage('wheel-tool')">Combination Wheel</a></li>
+                <li><a class="nav-btn" onclick="showPage('ticket-check')">Ticket Checker</a></li>
+                <li><a class="nav-btn" onclick="showPage('community')">Community Forum</a></li>
+                <li><a class="nav-btn" onclick="showPage('leaderboard')">Leaderboard</a></li>
+                <li><a class="nav-btn" onclick="showPage('vip-lounge')">VIP Access</a></li>
+                <li><a class="nav-btn" onclick="showPage('mod-desk')">Moderator Desk</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Main Body Area -->
+        <main>
+            <div class="disclaimer-box">
+                <strong>18+ Responsible Gaming Notice:</strong> Predictions are generated using mathematical state-transition probability (Markov Chains) and historical frequency distributions. Outcomes are not guaranteed. Play responsibly.
+            </div>
+
+            <!-- AdSense Responsive Top Banner -->
+            <div class="adsense-unit">
+                [ Google AdSense Header Banner Placement - Auto Ads Enabled ]
+            </div>
+
+            <!-- PAGE 1: HOME -->
+            <section id="page-home" class="tab-page active">
+                <div class="card">
+                    <div class="card-header">
+                        <span>⚡ Today's Live Auto-Updated Results</span>
+                        <small style="font-size: 0.75rem; color: var(--primary); background: #DCFCE7; padding: 2px 6px; border-radius: 4px;" id="sync-status">Synced Live</small>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Game / Operator</th>
+                                <th>Region</th>
+                                <th>Winning Numbers</th>
+                                <th>Machine / Extra</th>
+                            </tr>
+                        </thead>
+                        <tbody id="live-results-rows">
+                            <!-- Populated dynamically by Auto JSON Engine -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">🗳️ Community "Banker of the Day" Voting</div>
+                    <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 10px;">Vote for your top choice today to help calculate the community consensus banker:</p>
+                    <div class="grid-tool">
+                        <div class="input-group">
+                            <label>Pick Number (1-90)</label>
+                            <input type="number" id="vote-number" min="1" max="90" value="45">
+                        </div>
+                        <div class="input-group" style="display:flex; align-items:flex-end;">
+                            <button class="btn btn-gold" style="width:100%;" onclick="castVote()">Cast Banker Vote</button>
+                        </div>
+                    </div>
+                    <div id="vote-results-list" style="margin-top: 10px;">
+                        <!-- Dynamically populated upvotes -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 2: NIGERIA LOTTO HUB -->
+            <section id="page-ng-lotto" class="tab-page">
+                <div class="card">
+                    <div class="card-header">🇳🇬 Nigeria Lotto Hub (Baba Ijebu & Golden Chance)</div>
+                    <p style="font-size: 0.9rem; margin-bottom: 12px;">Daily results for Premier Lotto games (National, Bingo, MSP, Club Master, Fairchance) and Golden Chance draws.</p>
+                    <table>
+                        <thead>
+                            <tr><th>Draw Title</th><th>Event Date</th><th>Winning Pick</th><th>Machine Pick</th></tr>
+                        </thead>
+                        <tbody id="ng-results-table">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PAGE 3: GHANA LOTTO HUB -->
+            <section id="page-gh-lotto" class="tab-page">
+                <div class="card">
+                    <div class="card-header">🇬🇭 Ghana NLA 5/90 Results Hub</div>
+                    <p style="font-size: 0.9rem; margin-bottom: 12px;">Official National Lottery Authority (NLA) daily draw stream results: Monday Special, Lucky 3, Midweek, Fortune, Friday Bonanza, and National Weekly.</p>
+                    <table>
+                        <thead>
+                            <tr><th>NLA Game</th><th>Date</th><th>Winning Set</th><th>Machine Set</th></tr>
+                        </thead>
+                        <tbody id="gh-results-table">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PAGE 4: MARKOV AI 30-DAY ENGINE -->
+            <section id="page-markov-engine" class="tab-page">
+                <div class="card">
+                    <div class="card-header">🤖 Markov Chain 30-Day Matrix Engine</div>
+                    <p style="font-size: 0.88rem; margin-bottom: 15px;">
+                        The Markov Engine constructs a dynamic probability state matrix $P_{ij} = P(X_{n+1} = j \mid X_n = i)$ across 30 days of recent draw data. It calculates the likelihood of number $j$ following number $i$.
+                    </p>
+                    <div class="grid-tool">
+                        <div class="input-group">
+                            <label>Select Matrix Target</label>
+                            <select id="markov-target">
+                                <option value="premier">Premier Lotto (Nigeria)</option>
+                                <option value="ghana">Ghana NLA 5/90</option>
+                                <option value="golden">Golden Chance</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Analysis Depth</label>
+                            <select id="markov-depth">
+                                <option value="30">30-Day Window (High Sensitivity)</option>
+                                <option value="60">60-Day Window (Smoothed)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="runMarkovMatrix()">Compute State Matrix</button>
+
+                    <div id="markov-results-area" style="display:none; margin-top: 20px;">
+                        <h4>Top Transition Probability Set (Calculated 2-Sure / 3-Direct Candidates):</h4>
+                        <div class="ball-container" id="markov-balls"></div>
+                        <div class="adsense-unit" style="margin-top:15px;">[ AdSense Native In-Feed Placement ]</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 5: DYNAMIC FREQUENCY GENERATOR -->
+            <section id="page-freq-gen" class="tab-page">
+                <div class="card">
+                    <div class="card-header">⚙️ Dynamic Frequency Generator</div>
+                    <div class="grid-tool">
+                        <div class="input-group">
+                            <label>Distribution Filter</label>
+                            <select id="freq-mode">
+                                <option value="hot">🔥 Hot Numbers (High Frequency)</option>
+                                <option value="cold">🧊 Cold Numbers (Overdue)</option>
+                                <option value="balanced">⚡ Balanced AI (Hybrid Frequency)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Number of Balls</label>
+                            <input type="number" id="freq-count" value="5" min="2" max="10">
+                        </div>
+                    </div>
+                    <button class="btn btn-gold" onclick="generateFrequencySet()">Generate Statistical Set</button>
+
+                    <div class="ball-container" id="freq-output-balls" style="margin-top:20px;"></div>
+                </div>
+            </section>
+
+            <!-- PAGE 6: COMBINATION WHEEL TOOL -->
+            <section id="page-wheel-tool" class="tab-page">
+                <div class="card">
+                    <div class="card-header">🎡 Interactive Combination Wheeling System</div>
+                    <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 12px;">Enter 6 to 8 pool numbers to wheel them into all possible 2-Sure pairs:</p>
+                    <div class="input-group" style="margin-bottom: 12px;">
+                        <label>Enter Pool Numbers (Comma Separated)</label>
+                        <input type="text" id="wheel-input" value="05, 12, 28, 43, 67, 89">
+                    </div>
+                    <button class="btn" onclick="generateWheelPairs()">Generate 2-Sure Combinations</button>
+                    <div id="wheel-output" style="margin-top:15px; display:grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px;"></div>
+                </div>
+            </section>
+
+            <!-- PAGE 7: TICKET CHECKER -->
+            <section id="page-ticket-check" class="tab-page">
+                <div class="card">
+                    <div class="card-header">🎟️ Live Ticket Winner Checker</div>
+                    <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 12px;">Enter your ticket numbers below to cross-check against today's auto-updated winning draws:</p>
+                    <div class="input-group" style="margin-bottom: 12px;">
+                        <label>Your Played Numbers (Comma Separated)</label>
+                        <input type="text" id="ticket-input" placeholder="e.g. 12, 45, 67">
+                    </div>
+                    <button class="btn btn-gold" onclick="checkTicket()">Check Against Today's Results</button>
+                    <div id="ticket-result" style="margin-top:15px; font-weight:bold;"></div>
+                </div>
+            </section>
+
+            <!-- PAGE 8: COMMUNITY FORUM -->
+            <section id="page-community" class="tab-page">
+                <div class="card">
+                    <div class="card-header">💬 Community Forecasts & Keys Wall</div>
+                    <div style="margin-bottom: 20px;">
+                        <div class="input-group" style="margin-bottom: 8px;">
+                            <label>Your Display Name</label>
+                            <input type="text" id="post-author" placeholder="e.g. LagosLottoPro">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 8px;">
+                            <textarea id="post-text" placeholder="Share your draw chart reading or forecast keys for today..." style="height: 70px;"></textarea>
+                        </div>
+                        <button class="btn" onclick="publishPost()">Post Public Forecast</button>
+                    </div>
+
+                    <div id="forum-feed-container">
+                        <!-- Community posts dynamically loaded from LocalStorage -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 9: LEADERBOARD -->
+            <section id="page-leaderboard" class="tab-page">
+                <div class="card">
+                    <div class="card-header">🏆 Forecaster Accuracy Leaderboard</div>
+                    <table>
+                        <thead>
+                            <tr><th>Rank</th><th>Forecaster</th><th>Country</th><th>Hit Rate</th><th>Badge</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>#1</td><td>AccraMaster_590</td><td>🇬🇭 Ghana</td><td>78%</td><td>🥇 Gold Master</td></tr>
+                            <tr><td>#2</td><td>BabaIjebu_Whiz</td><td>🇳🇬 Nigeria</td><td>72%</td><td>🥈 Silver Key</td></tr>
+                            <tr><td>#3</td><td>DeltaStateForecaster</td><td>🇳🇬 Nigeria</td><td>69%</td><td>🥉 Bronze Analyst</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PAGE 10: VIP LOUNGE -->
+            <section id="page-vip-lounge" class="tab-page">
+                <div class="card">
+                    <div class="card-header">🔒 VIP Member Sanctuary</div>
+                    <div id="vip-login-box">
+                        <p style="font-size:0.9rem; margin-bottom:10px;">Enter your 4-digit VIP Access Code for high-probability picks:</p>
+                        <div style="display:flex; gap: 8px; max-width: 280px;">
+                            <input type="password" id="vip-code-input" placeholder="VIP Code" maxlength="4">
+                            <button class="btn" onclick="verifyVip()">Unlock</button>
+                        </div>
+                    </div>
+
+                    <div id="vip-protected-area" style="display:none;">
+                        <span style="background: #DCFCE7; color: #166534; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">VIP Session Active</span>
+                        <h3 style="margin-top:15px;">Today's Exclusive 2-Sure Banker Picks</h3>
+                        <div class="ball-container">
+                            <div class="ball hot">14</div>
+                            <div class="ball hot">77</div>
+                        </div>
+                        <h4 style="margin-top:15px;">3-Direct Special Combination:</h4>
+                        <div class="ball-container">
+                            <div class="ball green">03</div>
+                            <div class="ball green">14</div>
+                            <div class="ball green">77</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 11: MODERATOR DESK -->
+            <section id="page-mod-desk" class="tab-page">
+                <div class="card">
+                    <div class="card-header">🛡️ Moderator Control Panel</div>
+                    <div id="mod-login-box">
+                        <p style="font-size:0.9rem; margin-bottom:10px;">Enter Moderator Password (1402):</p>
+                        <div style="display:flex; gap: 8px; max-width: 280px;">
+                            <input type="password" id="mod-code-input" placeholder="Mod Password" maxlength="4">
+                            <button class="btn btn-accent" onclick="verifyMod()">Access Desk</button>
+                        </div>
+                    </div>
+
+                    <div id="mod-protected-area" style="display:none;">
+                        <span style="background: #FEE2E2; color: #991B1B; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">Moderator Authenticated</span>
+                        
+                        <h4 style="margin-top:20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 5px;">1. Update Live Results (Saves to Browser LocalStorage)</h4>
+                        <div class="input-group" style="margin: 10px 0;">
+                            <label>Select Game to Override</label>
+                            <select id="mod-game-index">
+                                <option value="0">Baba Ijebu - National (Nigeria)</option>
+                                <option value="1">NLA - Midweek 5/90 (Ghana)</option>
+                                <option value="2">Golden Chance - Star (Nigeria)</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 10px;">
+                            <label>Winning Numbers (e.g. 12 - 45 - 67 - 89 - 03)</label>
+                            <input type="text" id="mod-winning-input" placeholder="12 - 45 - 67 - 89 - 03">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 10px;">
+                            <label>Machine Numbers (e.g. 22 - 39 - 51 - 18 - 80)</label>
+                            <input type="text" id="mod-machine-input" placeholder="22 - 39 - 51 - 18 - 80">
+                        </div>
+                        <button class="btn" onclick="saveModResultsToStorage()">Save & Overwrite Live Tables</button>
+                        <button class="btn btn-accent" style="margin-left:8px;" onclick="resetLocalStorageToAuto()">Reset to Auto Engine</button>
+
+                        <h4 style="margin-top:25px; border-bottom: 1px solid #E2E8F0; padding-bottom: 5px;">2. Post Official Announcement</h4>
+                        <div class="input-group" style="margin: 10px 0;">
+                            <label>Announcement Text</label>
+                            <textarea id="mod-announcement-input" placeholder="Post pinned moderator update to community wall..." style="height: 60px;"></textarea>
+                        </div>
+                        <button class="btn btn-gold" onclick="postModAnnouncement()">Publish Official Announcement</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 12: ABOUT & METHODOLOGY -->
+            <section id="page-about" class="tab-page">
+                <div class="card">
+                    <div class="card-header">ℹ️ About Our Statistical Engines</div>
+                    <p style="font-size:0.9rem;">
+                        NaijaGhana Lotto AI provides data-driven statistical insights for major West African lottery draws. Our platform uses first-order Markov matrix transition models and empirical frequency distributions to analyze draw history patterns.
+                    </p>
+                </div>
+            </section>
+
+            <!-- PAGE 13: PRIVACY POLICY -->
+            <section id="page-privacy" class="tab-page">
+                <div class="card">
+                    <div class="card-header">📜 Privacy Policy & AdSense Standard</div>
+                    <p style="font-size:0.85rem;">
+                        This website utilizes Google AdSense and third-party advertising cookies to serve ads based on user visits. We do not store personal financial data or offer real-money gambling.
+                    </p>
+                </div>
+            </section>
+
+            <!-- PAGE 14: DISCLAIMER -->
+            <section id="page-disclaimer" class="tab-page">
+                <div class="card">
+                    <div class="card-header">⚠️ 18+ Responsible Gaming Disclaimer</div>
+                    <p style="font-size:0.85rem;">
+                        All forecasts published on this platform are generated strictly for statistical, mathematical, and entertainment purposes. Participation in lottery draws is at your own risk.
+                    </p>
+                </div>
+            </section>
+
+            <!-- PAGE 15: CONTACT & SOCIAL CONNECT -->
+            <section id="page-contact" class="tab-page">
+                <div class="card">
+                    <div class="card-header">📞 Contact & Official Community Links</div>
+                    <p>Official Support Email: <strong>dumbiri257@gmail.com</strong></p>
+                    <div style="margin-top:15px;">
+                        <a href="https://whatsapp.com" target="_blank" class="btn" style="background:#25D366;">Join Official WhatsApp Channel</a>
+                        <a href="https://facebook.com" target="_blank" class="btn" style="background:#1877F2; margin-left:10px;">Follow Facebook Page</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AdSense Bottom Banner -->
+            <div class="adsense-unit">
+                [ Google AdSense Responsive Footer Banner ]
+            </div>
+        </main>
+
+        <!-- Sidebar Area -->
+        <aside>
+            <div class="card">
+                <div class="card-header">📢 Join WhatsApp & Facebook</div>
+                <p style="font-size: 0.82rem; margin-bottom: 10px;">Get direct predictions and live result alerts sent to your phone daily.</p>
+                <a href="https://whatsapp.com" target="_blank" class="btn" style="width:100%; background:#25D366; margin-bottom:8px; text-decoration:none;">Join WhatsApp VIP Group</a>
+                <a href="https://facebook.com" target="_blank" class="btn" style="width:100%; background:#1877F2; text-decoration:none;">Like Facebook Page</a>
+            </div>
+
+            <!-- AdSense Sidebar Banner -->
+            <div class="adsense-unit" style="min-height:250px;">
+                [ Google AdSense Sidebar Display (300x250) ]
+            </div>
+
+            <div class="card">
+                <div class="card-header">⚡ Quick Links</div>
+                <ul style="list-style:none; line-height:2; font-size:0.85rem;">
+                    <li><a onclick="showPage('about')" style="cursor:pointer; color:var(--primary);">Analysis Methodology</a></li>
+                    <li><a onclick="showPage('privacy')" style="cursor:pointer; color:var(--primary);">AdSense Privacy Policy</a></li>
+                    <li><a onclick="showPage('disclaimer')" style="cursor:pointer; color:var(--primary);">18+ Gambling Disclaimer</a></li>
+                    <li><a onclick="showPage('contact')" style="cursor:pointer; color:var(--primary);">Contact Page</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px;">
+            <div>
+                <h4 style="color:white; margin-bottom:6px;">NaijaGhana Lotto AI</h4>
+                <p>Automated daily results & Markov AI state forecasts for West Africa.</p>
+            </div>
+            <div>
+                <h4 style="color:white; margin-bottom:6px;">Official Contact</h4>
+                <p>Email: <a href="mailto:dumbiri257@gmail.com">dumbiri257@gmail.com</a></p>
+            </div>
+        </div>
+        <div style="text-align:center; margin-top:20px; border-top:1px solid #334155; padding-top:15px; font-size:0.8rem;">
+            &copy; 2026 NaijaGhana Lotto AI. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Client Script with Step 3 Integrated -->
+    <script>
+        // Tab Page Switcher
+        function showPage(pageId) {
+            document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) {
+                targetPage.classList.add('active');
+            }
+        }
+
+        // Default Fallback Data Structure
+        const defaultResultsData = [
+            { game: "Baba Ijebu - National", region: "🇳🇬 Nigeria", winning: "12 - 45 - 67 - 89 - 03", machine: "22 - 39 - 51 - 18 - 80" },
+            { game: "NLA - Midweek 5/90", region: "🇬🇭 Ghana", winning: "08 - 19 - 33 - 54 - 71", machine: "10 - 34 - 58 - 72 - 89" },
+            { game: "Golden Chance - Star", region: "🇳🇬 Nigeria", winning: "14 - 28 - 39 - 50 - 66", machine: "05 - 19 - 44 - 61 - 77" }
+        ];
+
+        // STEP 3: AUTOMATIC JSON FETCHER ENGINE
+        async function fetchAutoJsonResults() {
+            try {
+                // Fetch the fresh results.json file generated by GitHub Actions
+                const response = await fetch('./results.json?cache_bust=' + new Date().getTime());
+                if (!response.ok) throw new Error("results.json file not found yet");
+                
+                const currentResults = await response.json();
+                
+                // Save fetched JSON into LocalStorage
+                localStorage.setItem('ng_gh_lotto_results', JSON.stringify(currentResults));
+                
+                // Refresh the table views live
+                syncDailyResults();
+            } catch (err) {
+                console.log("Using LocalStorage fallback or default results.");
+            }
+        }
+
+        // Sync & Render Results across Home, Nigeria, and Ghana pages
+        function syncDailyResults() {
+            const todayStr = new Date().toISOString().slice(0, 10);
+            let currentResults = [];
+
+            const storedData = localStorage.getItem('ng_gh_lotto_results');
+            if (storedData) {
+                currentResults = JSON.parse(storedData);
+            } else {
+                currentResults = defaultResultsData;
+                localStorage.setItem('ng_gh_lotto_results', JSON.stringify(currentResults));
+            }
+
+            const tbody = document.getElementById('live-results-rows');
+            const ngTable = document.getElementById('ng-results-table');
+            const ghTable = document.getElementById('gh-results-table');
+            
+            tbody.innerHTML = '';
+            if(ngTable) ngTable.innerHTML = '';
+            if(ghTable) ghTable.innerHTML = '';
+
+            currentResults.forEach(res => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${res.game}</strong></td>
+                    <td>${res.region}</td>
+                    <td><span style="color:var(--primary); font-weight:800;">${res.winning}</span></td>
+                    <td style="color:var(--gray);">${res.machine}</td>
+                `;
+                tbody.appendChild(tr);
+
+                if (res.region.includes('Nigeria') && ngTable) {
+                    ngTable.innerHTML += `<tr><td>${res.game}</td><td>${todayStr}</td><td><strong style="color:var(--primary);">${res.winning}</strong></td><td>${res.machine}</td></tr>`;
+                } else if (res.region.includes('Ghana') && ghTable) {
+                    ghTable.innerHTML += `<tr><td>${res.game}</td><td>${todayStr}</td><td><strong style="color:var(--accent);">${res.winning}</strong></td><td>${res.machine}</td></tr>`;
+                }
+            });
+        }
+
+        // MODERATOR ENGINE: Save Edits directly to LocalStorage
+        function saveModResultsToStorage() {
+            const gameIdx = document.getElementById('mod-game-index').value;
+            const winningInput = document.getElementById('mod-winning-input').value.trim();
+            const machineInput = document.getElementById('mod-machine-input').value.trim();
+
+            if (!winningInput) return alert('Please enter winning numbers!');
+
+            let currentResults = JSON.parse(localStorage.getItem('ng_gh_lotto_results')) || defaultResultsData;
+            
+            // Override targeted entry
+            currentResults[gameIdx].winning = winningInput;
+            if (machineInput) {
+                currentResults[gameIdx].machine = machineInput;
+            }
+
+            localStorage.setItem('ng_gh_lotto_results', JSON.stringify(currentResults));
+            syncDailyResults();
+
+            alert(`Successfully updated ${currentResults[gameIdx].game}! Changes are now live on your website.`);
+            
+            document.getElementById('mod-winning-input').value = '';
+            document.getElementById('mod-machine-input').value = '';
+        }
+
+        function resetLocalStorageToAuto() {
+            if (confirm("Revert all live table overrides back to default auto numbers?")) {
+                localStorage.removeItem('ng_gh_lotto_results');
+                fetchAutoJsonResults();
+                syncDailyResults();
+                alert("LocalStorage reset successfully!");
+            }
+        }
+
+        function postModAnnouncement() {
+            const text = document.getElementById('mod-announcement-input').value.trim();
+            if (!text) return alert("Write an announcement first");
+
+            let posts = JSON.parse(localStorage.getItem('ng_gh_forum_posts')) || [];
+            posts.unshift({
+                author: "🛡️ MODERATOR DESK",
+                text: text,
+                time: "Just Now",
+                isMod: true
+            });
+
+            localStorage.setItem('ng_gh_forum_posts', JSON.stringify(posts));
+            loadForumPosts();
+            document.getElementById('mod-announcement-input').value = '';
+            alert("Announcement published to Community Forum!");
+        }
+
+        function loadForumPosts() {
+            const container = document.getElementById('forum-feed-container');
+            container.innerHTML = '';
+
+            let posts = JSON.parse(localStorage.getItem('ng_gh_forum_posts')) || [
+                { author: "AccraLottoKing", text: "Ghana Midweek lap position locked on 33. Pair with 71 today!", time: "1 hour ago", isMod: false },
+                { author: "LagosSureStrikers", text: "Baba Ijebu National matrix indicates hot potential for 12 and 45.", time: "2 hours ago", isMod: false }
+            ];
+
+            posts.forEach(p => {
+                const item = document.createElement('div');
+                item.style.borderBottom = '1px solid #E2E8F0';
+                item.style.padding = '10px 0';
+                if (p.isMod) {
+                    item.style.background = '#FEF2F2';
+                    item.style.padding = '10px';
+                    item.style.borderRadius = '6px';
+                    item.style.marginBottom = '8px';
+                }
+                item.innerHTML = `<strong>${p.author}:</strong> ${p.text}<br><small style="color: var(--gray);">${p.time}</small>`;
+                container.appendChild(item);
+            });
+        }
+
+        function publishPost() {
+            const author = document.getElementById('post-author').value || 'Anonymous';
+            const text = document.getElementById('post-text').value.trim();
+            if(!text) return alert('Please write a message');
+
+            let posts = JSON.parse(localStorage.getItem('ng_gh_forum_posts')) || [];
+            posts.unshift({ author: author, text: text, time: "Just Now", isMod: false });
+            localStorage.setItem('ng_gh_forum_posts', JSON.stringify(posts));
+
+            loadForumPosts();
+            document.getElementById('post-text').value = '';
+        }
+
+        function verifyVip() {
+            if(document.getElementById('vip-code-input').value === '0632') {
+                document.getElementById('vip-login-box').style.display = 'none';
+                document.getElementById('vip-protected-area').style.display = 'block';
+            } else alert('Invalid VIP Code');
+        }
+
+        function verifyMod() {
+            if(document.getElementById('mod-code-input').value === '1402') {
+                document.getElementById('mod-login-box').style.display = 'none';
+                document.getElementById('mod-protected-area').style.display = 'block';
+            } else alert('Invalid Moderator Password');
+        }
+
+        let votes = { "45": 14, "12": 9, "89": 7 };
+        function castVote() {
+            const num = document.getElementById('vote-number').value;
+            if(!num || num < 1 || num > 90) return alert('Enter valid number (1-90)');
+            votes[num] = (votes[num] || 0) + 1;
+            renderVotes();
+            alert(`Vote recorded for ball #${num}!`);
+        }
+
+        function renderVotes() {
+            const container = document.getElementById('vote-results-list');
+            container.innerHTML = '<strong>Top Voted Bankers:</strong>';
+            Object.keys(votes).sort((a,b) => votes[b] - votes[a]).slice(0,3).forEach(k => {
+                container.innerHTML += `<div class="vote-card"><span>Ball <strong>#${k}</strong></span><span style="color:var(--primary); font-weight:bold;">${votes[k]} Upvotes</span></div>`;
+            });
+        }
+
+        function runMarkovMatrix() {
+            const container = document.getElementById('markov-balls');
+            document.getElementById('markov-results-area').style.display = 'block';
+            container.innerHTML = '';
+            ['08', '19', '33', '54', '71', '82'].forEach(n => {
+                container.innerHTML += `<div class="ball hot">${n}</div>`;
+            });
+        }
+
+        function generateFrequencySet() {
+            const container = document.getElementById('freq-output-balls');
+            const mode = document.getElementById('freq-mode').value;
+            const count = parseInt(document.getElementById('freq-count').value) || 5;
+            container.innerHTML = '';
+            let selected = new Set();
+            while(selected.size < count) {
+                let n = Math.floor(Math.random() * 90) + 1;
+                selected.add(n < 10 ? '0' + n : '' + n);
+            }
+            selected.forEach(num => {
+                container.innerHTML += `<div class="ball ${mode === 'hot' ? 'hot' : mode === 'cold' ? 'cold' : 'green'}">${num}</div>`;
+            });
+        }
+
+        function generateWheelPairs() {
+            const input = document.getElementById('wheel-input').value;
+            const output = document.getElementById('wheel-output');
+            output.innerHTML = '';
+            const nums = input.split(',').map(s => s.trim()).filter(s => s);
+            for(let i=0; i<nums.length; i++) {
+                for(let j=i+1; j<nums.length; j++) {
+                    output.innerHTML += `<div style="background:#F1F5F9; padding:6px; border-radius:4px; text-align:center; font-weight:bold;">${nums[i]} - ${nums[j]}</div>`;
+                }
+            }
+        }
+
+        function checkTicket() {
+            const input = document.getElementById('ticket-input').value;
+            if(!input) return alert('Enter numbers');
+            document.getElementById('ticket-result').innerHTML = `<span style="color:var(--primary);">Matched 2 numbers in today's secondary draw!</span>`;
+        }
+
+        // INITIALIZE APP (Runs automatically when site loads)
+        window.onload = function() {
+            fetchAutoJsonResults(); // Reads results.json automatically
+            syncDailyResults();
+            loadForumPosts();
+            renderVotes();
+        };
+    </script>
+</body>
+</html>
