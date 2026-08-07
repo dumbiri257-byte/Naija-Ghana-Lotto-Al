@@ -1,333 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NaijaGhana Lotto AI - Daily Auto Results & Markov 30D Engine</title>
-    <meta name="description" content="Automatic daily Nigeria & Ghana lotto results, Markov 30-day AI probability matrix engine, frequency generator, and community prediction forum.">
-    <style>
-        :root {
-            --primary: #008751; /* Nigeria Green */
-            --secondary: #FCD116; /* Ghana Gold */
-            --accent: #CE1126; /* Ghana Red */
-            --dark: #0F172A;
-            --light: #F8FAFC;
-            --gray: #64748B;
-            --card-bg: #FFFFFF;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NaijaGhana LottoAI - Predictions & Auto-Results</title>
+  <style>
+    /* Smooth Scroll Setup */
+    html {
+      scroll-behavior: smooth;
+    }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        body { background-color: #F1F5F9; color: var(--dark); line-height: 1.6; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0b132b;
+      color: #ffffff;
+    }
 
-        /* Top Header Bar */
-        .top-bar { background: #000; color: #94A3B8; padding: 6px 5%; display: flex; justify-content: space-between; font-size: 0.82rem; flex-wrap: wrap; }
-        .top-bar a { color: var(--secondary); text-decoration: none; margin-left: 10px; }
-        
-        header { background: var(--dark); color: white; border-bottom: 4px solid var(--primary); position: sticky; top: 0; z-index: 100; }
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; flex-wrap: wrap; }
-        .logo { font-size: 1.4rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; }
-        .logo span { color: var(--secondary); }
-        
-        /* Navigation Links Grid for 15 Pages */
-        .nav-links { display: flex; gap: 10px; list-style: none; flex-wrap: wrap; margin-top: 8px; }
-        .nav-links a { color: #E2E8F0; text-decoration: none; font-size: 0.85rem; font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.05); }
-        .nav-links a:hover, .nav-links a.active { color: var(--dark); background: var(--secondary); }
+    header {
+      background-color: #1c2541;
+      padding: 15px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 2px solid #48cae4;
+    }
 
-        /* App Layout */
-        .container { max-width: 1300px; margin: 20px auto; padding: 0 15px; display: grid; grid-template-columns: 3.2fr 1fr; gap: 20px; }
+    .status-bar {
+      font-size: 12px;
+      color: #00f5d4;
+      margin-bottom: 5px;
+    }
 
-        .card { background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #E2E8F0; }
-        .card-header { font-size: 1.15rem; font-weight: 700; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+    .brand {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
 
-        /* AdSense Banners */
-        .adsense-unit { background: #E2E8F0; border: 1px dashed #94A3B8; text-align: center; padding: 12px; color: var(--gray); font-size: 0.8rem; border-radius: 6px; margin: 15px 0; font-weight: 600; }
+    .brand span {
+      color: #ffb703;
+    }
 
-        /* Lottery Balls Display */
-        .ball-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .ball { width: 38px; height: 38px; background: radial-gradient(circle at 35% 35%, var(--secondary), #d9a700); color: var(--dark); font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.15); font-size: 1rem; }
-        .ball.hot { background: radial-gradient(circle at 35% 35%, #FF6B6B, var(--accent)); color: white; }
-        .ball.cold { background: radial-gradient(circle at 35% 35%, #60A5FA, #2563EB); color: white; }
-        .ball.green { background: radial-gradient(circle at 35% 35%, #34D399, var(--primary)); color: white; }
+    /* Navigation Grid for Mobile */
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      padding: 5px 0;
+    }
 
-        /* Interactive Controls & Forms */
-        .grid-tool { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; color: var(--gray); }
-        .input-group select, .input-group input, .input-group textarea { width: 100%; padding: 8px 12px; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 0.9rem; outline: none; }
-        .input-group select:focus, .input-group input:focus { border-color: var(--primary); }
-        
-        .btn { background: var(--primary); color: white; padding: 9px 18px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-gold { background: var(--secondary); color: var(--dark); }
-        .btn-accent { background: var(--accent); color: white; }
+    nav a {
+      background-color: #3a506b;
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
 
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.88rem; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #E2E8F0; }
-        th { background: #F8FAFC; color: var(--gray); font-weight: 700; }
+    nav a:hover, nav a.active {
+      background-color: #ffb703;
+      color: #000000;
+    }
 
-        /* Page Display Switching */
-        .tab-page { display: none; }
-        .tab-page.active { display: block; }
-        
-        .disclaimer-box { background: #FEF3C7; border-left: 4px solid var(--secondary); padding: 10px 14px; margin-bottom: 15px; font-size: 0.82rem; color: #78350F; border-radius: 0 6px 6px 0; }
+    nav a.highlight {
+      background-color: #00f5d4;
+      color: #000000;
+    }
 
-        /* Voting System */
-        .vote-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #F8FAFC; border-radius: 6px; margin-bottom: 6px; border: 1px solid #E2E8F0; }
+    .container {
+      padding: 15px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
 
-        footer { background: var(--dark); color: #94A3B8; padding: 30px 5%; margin-top: 40px; font-size: 0.85rem; }
-        footer a { color: white; text-decoration: none; }
+    .notice-box {
+      background-color: #fefae0;
+      color: #bc6c25;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 15px;
+      border-left: 4px solid #dda15e;
+    }
 
-        @media (max-width: 900px) {
-            .container { grid-template-columns: 1fr; }
-            .nav-links { justify-content: center; }
-        }
-    </style>
+    .adsense-box {
+      background-color: #111827;
+      border: 1px dashed #4b5563;
+      color: #9ca3af;
+      padding: 15px;
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+    }
+
+    section {
+      background-color: #1c2541;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #3a506b;
+      scroll-margin-top: 180px; /* Space for sticky header */
+    }
+
+    h2 {
+      color: #00f5d4;
+      margin-top: 0;
+      font-size: 18px;
+      border-bottom: 1px solid #3a506b;
+      padding-bottom: 8px;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #d1d5db;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #10b981;
+      color: #ffffff;
+      padding: 3px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      float: right;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Top Info Bar -->
-    <div class="top-bar">
-        <span>🟢 Live Status: Auto-Sync Engine Active</span>
-        <div>
-            Email: <a href="mailto:dumbiri257@gmail.com">dumbiri257@gmail.com</a>
-        </div>
+  <!-- Sticky Header & Nav Bar -->
+  <header>
+    <div class="status-bar">🟢 Live Status: Auto-Sync Engine Active | Contact: dumbiri257@gmail.com</div>
+    <div class="brand">⚽ NaijaGhana <span>LottoAI</span></div>
+    
+    <nav>
+      <a href="#home" class="highlight">Home</a>
+      <a href="#nigeria-hub">Nigeria Hub</a>
+      <a href="#ghana-hub" class="highlight">Ghana Hub</a>
+      <a href="#cast-banker">Cast Banker</a>
+      <a href="#markov-30d">Markov 30D</a>
+      <a href="#frequency-gen">Frequency Gen</a>
+      <a href="#combination-wheel">Combination Wheel</a>
+      <a href="#ticket-checker">Ticket Checker</a>
+      <a href="#community-forum">Community Forum</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#vip-access">VIP Access</a>
+      <a href="#moderator-desk">Moderator Desk</a>
+    </nav>
+  </header>
+
+  <div class="container">
+
+    <!-- Notice Box -->
+    <div class="notice-box">
+      <strong>18+ Responsible Gaming Notice:</strong> Predictions are generated using mathematical state-transition probability (Markov Chains) and historical frequency distributions. Outcomes are not guaranteed. Play responsibly.
     </div>
 
-    <!-- Main Header Navigation -->
-    <header>
-        <nav>
-            <a class="logo" onclick="showPage('home')">⚽ NaijaGhana<span>LottoAI</span></a>
-            <ul class="nav-links">
-                <li><a class="nav-btn active" onclick="showPage('home')">Home</a></li>
-                <li><a class="nav-btn" onclick="showPage('ng-lotto')">Nigeria Hub</a></li>
-                <li><a class="nav-btn" onclick="showPage('gh-lotto')">Ghana Hub</a></li>
-                <li><a class="nav-btn" onclick="showPage('markov-engine')">Markov 30D</a></li>
-                <li><a class="nav-btn" onclick="showPage('freq-gen')">Frequency Gen</a></li>
-                <li><a class="nav-btn" onclick="showPage('wheel-tool')">Combination Wheel</a></li>
-                <li><a class="nav-btn" onclick="showPage('ticket-check')">Ticket Checker</a></li>
-                <li><a class="nav-btn" onclick="showPage('community')">Community Forum</a></li>
-                <li><a class="nav-btn" onclick="showPage('leaderboard')">Leaderboard</a></li>
-                <li><a class="nav-btn" onclick="showPage('vip-lounge')">VIP Access</a></li>
-                <li><a class="nav-btn" onclick="showPage('mod-desk')">Moderator Desk</a></li>
-            </ul>
-        </nav>
-    </header>
+    <!-- AdSense Banner Placeholder -->
+    <div class="adsense-box">
+      [ Google AdSense Header Banner Placement - Auto Ads Enabled ]
+    </div>
 
-    <div class="container">
-        <!-- Main Body Area -->
-        <main>
-            <div class="disclaimer-box">
-                <strong>18+ Responsible Gaming Notice:</strong> Predictions are generated using mathematical state-transition probability (Markov Chains) and historical frequency distributions. Outcomes are not guaranteed. Play responsibly.
-            </div>
+    <!-- 1. Home Section -->
+    <section id="home">
+      <span class="badge">Synced Live</span>
+      <h2>⚡ Today's Live Auto-Updated Results</h2>
+      <p>Welcome to NaijaGhana LottoAI! Here you get automated daily result tracking and Markov AI 30-day state transition forecast engine for Nigeria (Baba Ijebu, Golden Chance) and Ghana NLA 5/90 lotteries.</p>
+    </section>
 
-            <!-- AdSense Responsive Top Banner -->
-            <div class="adsense-unit">
-                [ Google AdSense Header Banner Placement - Auto Ads Enabled ]
-            </div>
+    <!-- 2. Nigeria Hub -->
+    <section id="nigeria-hub">
+      <h2>🇳🇬 Nigeria Hub (Baba Ijebu & Golden Chance)</h2>
+      <p>Daily live updates, predictions, and draw histories for Baba Ijebu (National, Bingo, Midweek, VAG, Enugu) and Golden Chance lotteries.</p>
+    </section>
 
-            <!-- PAGE 1: HOME -->
-            <section id="page-home" class="tab-page active">
-                <div class="card">
-                    <div class="card-header">
-                        <span>⚡ Today's Live Auto-Updated Results</span>
-                        <small style="font-size: 0.75rem; color: var(--primary); background: #DCFCE7; padding: 2px 6px; border-radius: 4px;" id="sync-status">Synced Live</small>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Game / Operator</th>
-                                <th>Region</th>
-                                <th>Winning Numbers</th>
-                                <th>Machine / Extra</th>
-                            </tr>
-                        </thead>
-                        <tbody id="live-results-rows">
-                            <!-- Populated dynamically by Auto JSON Engine -->
-                        </tbody>
-                    </table>
-                </div>
+    <!-- 3. Ghana Hub -->
+    <section id="ghana-hub">
+      <h2>🇬🇭 Ghana NLA Hub</h2>
+      <p>Official Ghana NLA 5/90 daily forecast and live winning numbers updates (Monday Special, Lucky 3, Midweek, Fortune, Friday Bonanza, National Weekly).</p>
+    </section>
 
-                <div class="card">
-                    <div class="card-header">🗳️ Community "Banker of the Day" Voting</div>
-                    <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 10px;">Vote for your top choice today to help calculate the community consensus banker:</p>
-                    <div class="grid-tool">
-                        <div class="input-group">
-                            <label>Pick Number (1-90)</label>
-                            <input type="number" id="vote-number" min="1" max="90" value="45">
-                        </div>
-                        <div class="input-group" style="display:flex; align-items:flex-end;">
-                            <button class="btn btn-gold" style="width:100%;" onclick="castVote()">Cast Banker Vote</button>
-                        </div>
-                    </div>
-                    <div id="vote-results-list" style="margin-top: 10px;">
-                        <!-- Dynamically populated upvotes -->
-                    </div>
-                </div>
-            </section>
+    <!-- 4. Cast Banker -->
+    <section id="cast-banker">
+      <h2>🎯 Cast Banker Predictions</h2>
+      <p>High-probability single key numbers (Direct 1) calculated via multi-variable frequency overlap and recent hot-pair drops.</p>
+    </section>
 
-            <!-- PAGE 2: NIGERIA LOTTO HUB -->
-            <section id="page-ng-lotto" class="tab-page">
-                <div class="card">
-                    <div class="card-header">🇳🇬 Nigeria Lotto Hub (Baba Ijebu & Golden Chance)</div>
-                    <p style="font-size: 0.9rem; margin-bottom: 12px;">Daily results for Premier Lotto games (National, Bingo, MSP, Club Master, Fairchance) and Golden Chance draws.</p>
-                    <table>
-                        <thead>
-                            <tr><th>Draw Title</th><th>Event Date</th><th>Winning Pick</th><th>Machine Pick</th></tr>
-                        </thead>
-                        <tbody id="ng-results-table">
-                            <!-- Filled dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+    <!-- 5. Markov 30D -->
+    <section id="markov-30d">
+      <h2>📊 Markov 30-Day Transition Forecast</h2>
+      <p>AI-driven matrix probability model tracking 30-day state transitions to forecast next-draw candidate sets.</p>
+    </section>
 
-            <!-- PAGE 3: GHANA LOTTO HUB -->
-            <section id="page-gh-lotto" class="tab-page">
-                <div class="card">
-                    <div class="card-header">🇬🇭 Ghana NLA 5/90 Results Hub</div>
-                    <p style="font-size: 0.9rem; margin-bottom: 12px;">Official National Lottery Authority (NLA) daily draw stream results: Monday Special, Lucky 3, Midweek, Fortune, Friday Bonanza, and National Weekly.</p>
-                    <table>
-                        <thead>
-                            <tr><th>NLA Game</th><th>Date</th><th>Winning Set</th><th>Machine Set</th></tr>
-                        </thead>
-                        <tbody id="gh-results-table">
-                            <!-- Filled dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+    <!-- 6. Frequency Gen -->
+    <section id="frequency-gen">
+      <h2>🔢 Frequency Generator</h2>
+      <p>Generate optimized combinations based on cold, warm, and hot number distribution patterns across past 100 draws.</p>
+    </section>
 
-            <!-- PAGE 4: MARKOV AI 30-DAY ENGINE -->
-            <section id="page-markov-engine" class="tab-page">
-                <div class="card">
-                    <div class="card-header">🤖 Markov Chain 30-Day Matrix Engine</div>
-                    <p style="font-size: 0.88rem; margin-bottom: 15px;">
-                        The Markov Engine constructs a dynamic probability state matrix $P_{ij} = P(X_{n+1} = j \mid X_n = i)$ across 30 days of recent draw data. It calculates the likelihood of number $j$ following number $i$.
-                    </p>
-                    <div class="grid-tool">
-                        <div class="input-group">
-                            <label>Select Matrix Target</label>
-                            <select id="markov-target">
-                                <option value="premier">Premier Lotto (Nigeria)</option>
-                                <option value="ghana">Ghana NLA 5/90</option>
-                                <option value="golden">Golden Chance</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Analysis Depth</label>
-                            <select id="markov-depth">
-                                <option value="30">30-Day Window (High Sensitivity)</option>
-                                <option value="60">60-Day Window (Smoothed)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="runMarkovMatrix()">Compute State Matrix</button>
+    <!-- 7. Combination Wheel -->
+    <section id="combination-wheel">
+      <h2>⚙️ Combination Wheel</h2>
+      <p>Select your favorite numbers and system-wheel them into optimal permutations to cover maximum winning lines.</p>
+    </section>
 
-                    <div id="markov-results-area" style="display:none; margin-top: 20px;">
-                        <h4>Top Transition Probability Set (Calculated 2-Sure / 3-Direct Candidates):</h4>
-                        <div class="ball-container" id="markov-balls"></div>
-                        <div class="adsense-unit" style="margin-top:15px;">[ AdSense Native In-Feed Placement ]</div>
-                    </div>
-                </div>
-            </section>
+    <!-- 8. Ticket Checker -->
+    <section id="ticket-checker">
+      <h2>🎟️ Ticket Checker</h2>
+      <p>Paste or enter your played numbers to cross-check instantly against official winning draw records.</p>
+    </section>
 
-            <!-- PAGE 5: DYNAMIC FREQUENCY GENERATOR -->
-            <section id="page-freq-gen" class="tab-page">
-                <div class="card">
-                    <div class="card-header">⚙️ Dynamic Frequency Generator</div>
-                    <div class="grid-tool">
-                        <div class="input-group">
-                            <label>Distribution Filter</label>
-                            <select id="freq-mode">
-                                <option value="hot">🔥 Hot Numbers (High Frequency)</option>
-                                <option value="cold">🧊 Cold Numbers (Overdue)</option>
-                                <option value="balanced">⚡ Balanced AI (Hybrid Frequency)</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Number of Balls</label>
-                            <input type="number" id="freq-count" value="5" min="2" max="10">
-                        </div>
-                    </div>
-                    <button class="btn btn-gold" onclick="generateFrequencySet()">Generate Statistical Set</button>
+    <!-- 9. Community Forum -->
+    <section id="community-forum">
+      <h2>💬 Interactive Community Forum</h2>
+      <p>Discuss daily forecasts, share banker numbers, and engage with other lotto enthusiasts across Nigeria and Ghana.</p>
+    </section>
 
-                    <div class="ball-container" id="freq-output-balls" style="margin-top:20px;"></div>
-                </div>
-            </section>
+    <!-- 10. Leaderboard -->
+    <section id="leaderboard">
+      <h2>🏆 Top Forecasters Leaderboard</h2>
+      <p>See the top-ranking community predictors based on monthly hit rates and verified direct-banker calls.</p>
+    </section>
 
-            <!-- PAGE 6: COMBINATION WHEEL TOOL -->
-            <section id="page-wheel-tool" class="tab-page">
-                <div class="card">
-                    <div class="card-header">🎡 Interactive Combination Wheeling System</div>
-                    <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 12px;">Enter 6 to 8 pool numbers to wheel them into all possible 2-Sure pairs:</p>
-                    <div class="input-group" style="margin-bottom: 12px;">
-                        <label>Enter Pool Numbers (Comma Separated)</label>
-                        <input type="text" id="wheel-input" value="05, 12, 28, 43, 67, 89">
-                    </div>
-                    <button class="btn" onclick="generateWheelPairs()">Generate 2-Sure Combinations</button>
-                    <div id="wheel-output" style="margin-top:15px; display:grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px;"></div>
-                </div>
-            </section>
+    <!-- 11. VIP Access -->
+    <section id="vip-access">
+      <h2>👑 VIP Portal Access</h2>
+      <p>Exclusive access to high-precision Markov AI key-sets, direct 2-sure permutations, and early forecast alerts.</p>
+    </section>
 
-            <!-- PAGE 7: TICKET CHECKER -->
-            <section id="page-ticket-check" class="tab-page">
-                <div class="card">
-                    <div class="card-header">🎟️ Live Ticket Winner Checker</div>
-                    <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 12px;">Enter your ticket numbers below to cross-check against today's auto-updated winning draws:</p>
-                    <div class="input-group" style="margin-bottom: 12px;">
-                        <label>Your Played Numbers (Comma Separated)</label>
-                        <input type="text" id="ticket-input" placeholder="e.g. 12, 45, 67">
-                    </div>
-                    <button class="btn btn-gold" onclick="checkTicket()">Check Against Today's Results</button>
-                    <div id="ticket-result" style="margin-top:15px; font-weight:bold;"></div>
-                </div>
-            </section>
+    <!-- 12. Moderator Desk -->
+    <section id="moderator-desk">
+      <h2>🛡️ Moderator Desk</h2>
+      <p>Portal for admin updates, manual result verifications, forum moderation, and system status management.</p>
+    </section>
 
-            <!-- PAGE 8: COMMUNITY FORUM -->
-            <section id="page-community" class="tab-page">
-                <div class="card">
-                    <div class="card-header">💬 Community Forecasts & Keys Wall</div>
-                    <div style="margin-bottom: 20px;">
-                        <div class="input-group" style="margin-bottom: 8px;">
-                            <label>Your Display Name</label>
-                            <input type="text" id="post-author" placeholder="e.g. LagosLottoPro">
-                        </div>
-                        <div class="input-group" style="margin-bottom: 8px;">
-                            <textarea id="post-text" placeholder="Share your draw chart reading or forecast keys for today..." style="height: 70px;"></textarea>
-                        </div>
-                        <button class="btn" onclick="publishPost()">Post Public Forecast</button>
-                    </div>
+  </div>
 
-                    <div id="forum-feed-container">
-                        <!-- Community posts dynamically loaded from LocalStorage -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- PAGE 9: LEADERBOARD -->
-            <section id="page-leaderboard" class="tab-page">
-                <div class="card">
-                    <div class="card-header">🏆 Forecaster Accuracy Leaderboard</div>
-                    <table>
-                        <thead>
-                            <tr><th>Rank</th><th>Forecaster</th><th>Country</th><th>Hit Rate</th><th>Badge</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>#1</td><td>AccraMaster_590</td><td>🇬🇭 Ghana</td><td>78%</td><td>🥇 Gold Master</td></tr>
-                            <tr><td>#2</td><td>BabaIjebu_Whiz</td><td>🇳🇬 Nigeria</td><td>72%</td><td>🥈 Silver Key</td></tr>
-                            <tr><td>#3</td><td>DeltaStateForecaster</td><td>🇳🇬 Nigeria</td><td>69%</td><td>🥉 Bronze Analyst</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- PAGE 10: VIP LOUNGE -->
-            <section id="page-vip-lounge" class="tab-page">
-                <div class="card">
-                    <div class="card-header">🔒 VIP Member Sanctuary</div>
-                    <div id="vip-login-box">
-                        <p style="font-size:0.9rem; margin-bottom:10px;">Enter your 4-digit VIP Access Code for high-probability picks:</p>
-                        <div style="display:flex; gap: 8px; max-width: 280px;">
-                            <input type="password" id="vip-code-input" placeholder="VIP Code" maxlength="4">
-                            <button class="btn" onclick="verifyVip()">Unlock</button>
-       
+</body>
+        </html>
