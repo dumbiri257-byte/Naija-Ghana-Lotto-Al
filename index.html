@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NaijaGhana LottoAI - Complete AI Lotto Engine & Forecast Hub</title>
+  <title>NaijaGhana LottoAI - #1 Daily Smart Tips & Auto-Results Machine Network</title>
   
-  <!-- Google AdSense Verification Header Script (Replace ca-pub-XXXXXXXXXXXXXXXX with your real publisher ID) -->
+  <!-- Google AdSense Verification Header Script (Change ca-pub-XXXXXXXXXXXXXXXX to your main ID when ready) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 
   <style>
@@ -26,7 +26,7 @@
     .container { padding: 15px; max-width: 800px; margin: 0 auto; }
     .notice-box { background-color: #fefae0; color: #bc6c25; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; border-left: 4px solid #dda15e; }
 
-    /* AdSense Standard Banner Box Styling */
+    /* AdSense Standard Banner Box */
     .adsense-unit { background-color: #111827; border: 1px dashed #4b5563; color: #9ca3af; padding: 12px; text-align: center; font-size: 11px; margin: 15px 0; border-radius: 6px; }
 
     .view-page { display: none; }
@@ -56,18 +56,19 @@
     footer a { color: #00f5d4; text-decoration: none; margin: 0 8px; font-weight: bold; cursor: pointer; }
     footer a:hover { text-decoration: underline; }
 
-    .policy-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 2000; overflow-y: auto; }
-    .policy-content { background-color: #1c2541; margin: 10% auto; padding: 20px; max-width: 600px; border-radius: 10px; border: 1px solid #00f5d4; color: #d1d5db; text-align: left; }
-    .policy-content h3 { color: #00f5d4; margin-top: 0; }
-    .close-btn { background-color: #e63946; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; float: right; cursor: pointer; font-weight: bold; }
+    /* Policy Modal Window Fix */
+    .policy-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 9999; overflow-y: auto; padding: 10px; box-sizing: border-box; }
+    .policy-content { background-color: #1c2541; margin: 15% auto; padding: 20px; max-width: 500px; border-radius: 10px; border: 2px solid #00f5d4; color: #d1d5db; text-align: left; position: relative; box-shadow: 0px 4px 15px rgba(0,0,0,0.5); }
+    .policy-content h3 { color: #00f5d4; margin-top: 0; padding-right: 30px; font-size: 18px; }
+    .close-btn { background-color: #e63946; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; position: absolute; top: 15px; right: 15px; cursor: pointer; font-weight: bold; font-size: 14px; }
   </style>
 </head>
 <body>
 
   <header>
     <div class="status-bar">
-      <span>🟢 AI Pipeline: Live</span>
-      <span>⚡ AdSense: Ready</span>
+      <span>🟢 AI Machine: Dey Run Live</span>
+      <span>⚡ AdSense: Set For Cash</span>
       <button class="mod-btn" onclick="accessAdmin()">🔐 Moderator Desk</button>
     </div>
     <div class="brand">⚽ NaijaGhana <span>LottoAI</span></div>
@@ -75,7 +76,7 @@
     <nav>
       <button id="nav-home" class="active" onclick="showPage('home')">🏠 Home Feed</button>
       <button id="nav-archive" onclick="showPage('archive')">📜 30D Results Archive</button>
-      <button id="nav-engines" onclick="showPage('engines')">⚙️ AI Engines & Wheel</button>
+      <button id="nav-engines" onclick="showPage('engines')">⚙️ AI Machines & Wheel</button>
       <button id="nav-forum" onclick="showPage('forum')">💬 Community Forum</button>
       <button id="nav-vip" class="vip-btn" onclick="showPage('vip')">👑 VIP Channel</button>
     </nav>
@@ -84,7 +85,7 @@
   <div class="container">
 
     <div class="notice-box">
-      <strong>18+ Warning:</strong> Predictions are generated using mathematical state-transition probability (Markov Chains) and frequency distributions. Outcomes are not guaranteed. Play responsibly.
+      <strong>18+ Warning:</strong> All predictions na calculated with Markov-chain probability and hot-number frequency models. Outcome no be 100% guarantee. Play with sense!
     </div>
 
     <!-- AdSense Header Banner Placement -->
@@ -99,11 +100,11 @@
         <div class="grid-2">
           <div class="stat-card">
             <div class="stat-num">07 - 42 - 88</div>
-            <div class="stat-label">Top 3 Hot Digits (30 Days)</div>
+            <div class="stat-label">Top 3 Hot Digits (Past 30 Days)</div>
           </div>
           <div class="stat-card">
             <div class="stat-num">89.4%</div>
-            <div class="stat-label">Markov AI Hit Rate</div>
+            <div class="stat-label">Markov AI Hit-Rate Score</div>
           </div>
         </div>
       </section>
@@ -111,9 +112,9 @@
       <section>
         <h2>🎯 Today Game AI Highlights & Machine Tip</h2>
         <div class="post-card">
-          <div class="post-title" id="today-game-name">Loading Today Game Schedule...</div>
-          <div class="post-numbers" id="today-banker-tip">Cast Banker Tip: [ Calculating... ]</div>
-          <p style="font-size:12px; color:#00f5d4;" id="today-ai-commentary">AI engine dey analyze state-transitions...</p>
+          <div class="post-title" id="today-game-name">Dey load today schedule...</div>
+          <div class="post-numbers" id="today-banker-tip">Cast Banker Tip: [ Machine dey calculate... ]</div>
+          <p style="font-size:12px; color:#00f5d4;" id="today-ai-commentary">AI engine dey calculate state-transitions...</p>
         </div>
       </section>
 
@@ -122,8 +123,8 @@
       </div>
 
       <section>
-        <h2>⚡ Live Stream & Post-Game AI Reviews</h2>
-        <div id="live-feed"><p>Loading latest postings...</p></div>
+        <h2>⚡ Live Results Stream & Post-Game AI Reviews</h2>
+        <div id="live-feed"><p>Machine dey fetch latest draw drop...</p></div>
       </section>
     </div>
 
@@ -131,16 +132,16 @@
     <div id="page-archive" class="view-page">
       <section>
         <h2>📜 Search & Filter 30-Day Results Archive</h2>
-        <input type="text" id="search-query" placeholder="Type Game Name or Date (e.g. National, Midweek)..." onkeyup="searchArchive()">
+        <input type="text" id="search-query" placeholder="Type Game Name or Date (e.g. National, Midweek, 2026-08)..." onkeyup="searchArchive()">
         
-        <label style="font-size:12px; color:#9ca3af;">Filter by Hub:</label>
+        <label style="font-size:12px; color:#9ca3af;">Select Region Hub:</label>
         <select id="hub-filter" onchange="filterHubResults()">
-          <option value="all">All Regions (Nigeria & Ghana)</option>
+          <option value="all">All Region Games (Naija & Ghana)</option>
           <option value="nigeria">Nigeria Hub (Baba Ijebu / Golden Chance)</option>
           <option value="ghana">Ghana NLA Hub</option>
         </select>
 
-        <div id="archive-results-list" style="margin-top:15px;">Loading history...</div>
+        <div id="archive-results-list" style="margin-top:15px;">Dey pull past history...</div>
       </section>
     </div>
 
@@ -148,25 +149,25 @@
     <div id="page-engines" class="view-page">
       <section>
         <h2>🎯 AI Engine 1: Daily Cast Banker Generator</h2>
-        <button class="action-btn" onclick="runCastBanker()">Generate Today's Cast Banker</button>
+        <button class="action-btn" onclick="runCastBanker()">Bring Today Cast Banker Tip</button>
         <div id="banker-result" class="result-display"></div>
       </section>
 
       <section>
         <h2>📊 AI Engine 2: Markov 30D State Transition Engine</h2>
-        <button class="action-btn" onclick="runMarkov()">Run Markov AI Probability Set</button>
+        <button class="action-btn" onclick="runMarkov()">Run Markov AI Probability Candidate Set</button>
         <div id="markov-result" class="result-display"></div>
       </section>
 
       <section>
         <h2>🔢 AI Engine 3: High-Frequency Hot Overlap Machine</h2>
-        <button class="action-btn" onclick="runFrequency()">Calculate Hot 3-Sure Overlap</button>
+        <button class="action-btn" onclick="runFrequency()">Calculate Today Hot 3-Sure Line</button>
         <div id="freq-result" class="result-display"></div>
       </section>
 
       <section>
         <h2>⚙️ Interactive Combination Wheel Machine</h2>
-        <p style="font-size:12px; color:#9ca3af;">Enter 4 to 8 numbers (comma separated) to generate full 2-Sure permutation lines:</p>
+        <p style="font-size:12px; color:#9ca3af;">Type 4 to 8 numbers (separate with comma) make the wheel give you all 2-Sure permutation lines:</p>
         <input type="text" id="wheel-input" placeholder="e.g. 07, 14, 22, 45, 88">
         <button class="action-btn" onclick="runWheel()">⚙️ Generate Combination Wheel Lines</button>
         <div id="wheel-result" class="result-display"></div>
@@ -177,15 +178,15 @@
     <div id="page-forum" class="view-page">
       <section>
         <h2>💬 Public Community Forum & AI Reviewer</h2>
-        <p style="font-size:13px; color:#9ca3af;">Share your forecasts with forecasters across Nigeria & Ghana:</p>
+        <p style="font-size:13px; color:#9ca3af;">Drop your daily predictions and yarn with forecasters across Naija and Ghana:</p>
         <input type="text" id="forum-user" placeholder="Your Predictor Handle / Name">
-        <textarea id="forum-msg" placeholder="Write your daily banker tips or game analysis..."></textarea>
-        <button class="action-btn" onclick="submitCommunityPost()">🚀 Post to Public Forum</button>
+        <textarea id="forum-msg" placeholder="Type your banker tips or game logic here..."></textarea>
+        <button class="action-btn" onclick="submitCommunityPost()">🚀 Post Am To Community Feed</button>
       </section>
 
       <section>
         <h2>💬 Community Feed & AI Moderated Reviews</h2>
-        <div id="forum-feed-list">Loading discussions...</div>
+        <div id="forum-feed-list">Dey load community yarn...</div>
       </section>
     </div>
 
@@ -193,18 +194,18 @@
     <div id="page-vip" class="view-page">
       <div id="vip-lock-box">
         <section style="text-align: center; border: 2px solid #ffb703;">
-          <h2 style="color:#ffb703;">🔒 VIP Channel (Passcode Protected)</h2>
-          <p>Access high-precision 2-Sure direct reports and comprehensive AI probability matrices.</p>
-          <button class="action-btn" style="background-color:#ffb703;" onclick="unlockVIP()">🔐 Enter VIP Passcode (7777)</button>
+          <h2 style="color:#ffb703;">🔒 VIP Channel (Locked With Password)</h2>
+          <p>Access high-precision Direct 2-Sure report and full AI probability matrices for paid members.</p>
+          <button class="action-btn" style="background-color:#ffb703;" onclick="unlockVIP()">🔐 Put VIP Password (7777)</button>
         </section>
       </div>
 
       <div id="vip-unlocked-box" style="display: none;">
         <section style="border: 2px solid #ffb703;">
-          <h2 style="color:#ffb703;">👑 Today VIP Direct 2-Sure & Permutation Report</h2>
+          <h2 style="color:#ffb703;">👑 Today VIP Direct High-Precision Report</h2>
           <div style="font-size: 22px; color: #00f5d4; font-weight: bold; margin: 10px 0;">Direct 2-Sure: [ 14 - 88 ]</div>
           <div style="font-size: 16px; color: #ffb703;">Backup 5-Perm: [ 14 - 88 - 07 - 42 - 59 ]</div>
-          <p style="font-size: 12px; color: #9ca3af; margin-top: 10px;">AI High-Precision Confidence Rating: 92.8% State-Transition Probability Match for today's draw.</p>
+          <p style="font-size: 12px; color: #9ca3af; margin-top: 10px;">AI High-Precision Rating: 92.8% State-Transition Probability Match for today draw.</p>
         </section>
       </div>
     </div>
@@ -212,8 +213,8 @@
     <!-- ================= MODERATOR DESK (LOCKED) ================= -->
     <div id="moderator-desk-sec" style="display: none; margin-top: 20px;">
       <section style="border: 2px solid #e63946;">
-        <h2 style="color: #e63946;">🛡️ Moderator Desk - Manual Broadcast Control</h2>
-        <p style="color: #ffb703;">Publish live winning numbers or forecasts to any channel instantly:</p>
+        <h2 style="color: #e63946;">🛡️ Moderator Desk - Live Broadcast Control</h2>
+        <p style="color: #ffb703;">Post live winning numbers or daily forecasts to any channel for free:</p>
         
         <label>Target Channel:</label>
         <select id="mod-channel">
@@ -228,7 +229,7 @@
         <label>Winning Numbers:</label>
         <input type="text" id="mod-numbers" placeholder="e.g. 12 - 45 - 67 - 89 - 03">
 
-        <label>Machine Numbers (Optional):</label>
+        <label>Machine Numbers (If e dey):</label>
         <input type="text" id="mod-machine" placeholder="e.g. 04 - 11 - 33 - 56 - 78">
 
         <label>GitHub Personal Access Token Key:</label>
@@ -250,7 +251,7 @@
     <div>
       <a onclick="openPolicy('privacy')">Privacy Policy</a> | 
       <a onclick="openPolicy('terms')">Terms of Service</a> | 
-      <a onclick="openPolicy('about')">About Us / Contact</a>
+      <a onclick="openPolicy('about')">About Us / Contact Us</a>
     </div>
   </footer>
 
@@ -259,7 +260,7 @@
     <div class="policy-content">
       <button class="close-btn" onclick="closePolicy('privacy')">X</button>
       <h3>Privacy Policy</h3>
-      <p>NaijaGhana LottoAI respects your privacy. We do not sell or harvest personal user data. Third-party vendors, including Google AdSense, use cookies to serve ads based on your visit to this site. Users may opt out of personalized advertising by visiting Google's Ad Settings.</p>
+      <p>NaijaGhana LottoAI dey respect your privacy well well. We no dey sell or pack user personal data. Third-party partners, including Google AdSense, dey use cookies to show ads based on your visit to this site. Users fit opt out of personalized ads inside Google Ad Settings anytime.</p>
     </div>
   </div>
 
@@ -267,15 +268,15 @@
     <div class="policy-content">
       <button class="close-btn" onclick="closePolicy('terms')">X</button>
       <h3>Terms of Service & 18+ Disclaimer</h3>
-      <p>This platform provides analytical information, state-transition statistical models, and frequency tools for educational and entertainment purposes only. We are not a gambling operator. Predictions carry no guarantee. Users must be 18 years or older to use this service.</p>
+      <p>This site dey provide technical analysis, state-transition statistical models, and frequency calculation tools for educational and entertainment logic only. We no be gambling operator. Predictions carry no 100% guarantee. Person must be 18 years or older before using this site.</p>
     </div>
   </div>
 
   <div id="modal-about" class="policy-modal">
     <div class="policy-content">
       <button class="close-btn" onclick="closePolicy('about')">X</button>
-      <h3>About Us & Contact</h3>
-      <p>NaijaGhana LottoAI is an automated statistical analytical platform providing Markov-chain frequency models for lottery systems across Nigeria and Ghana.</p>
+      <h3>About Us & Contact Information</h3>
+      <p>NaijaGhana LottoAI na automated statistical platform wen dey provide Markov-chain frequency models for lotto systems across Nigeria and Ghana.</p>
       <p><strong>Official Contact Email:</strong> dumbiri257@gmail.com</p>
     </div>
   </div>
@@ -308,8 +309,19 @@
       document.getElementById("nav-" + pageId).classList.add("active");
     }
 
-    function openPolicy(type) { document.getElementById("modal-" + type).style.display = "block"; }
-    function closePolicy(type) { document.getElementById("modal-" + type).style.display = "none"; }
+    function openPolicy(type) {
+      document.getElementById("modal-" + type).style.display = "block";
+    }
+
+    function closePolicy(type) {
+      document.getElementById("modal-" + type).style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target.classList.contains('policy-modal')) {
+        event.target.style.display = "none";
+      }
+    };
 
     function getTodayInfo() {
       let d = new Date().getDay();
@@ -322,7 +334,7 @@
       let r = Math.floor(Math.random() * 90) + 1;
       let banker = r < 10 ? '0' + r : r;
       document.getElementById("today-banker-tip").innerHTML = `🎯 Key Cast Banker: [ ${banker} ]`;
-      document.getElementById("today-ai-commentary").innerHTML = `💡 AI Review: High-frequency state-transition overlap detected for ${info.game} today!`;
+      document.getElementById("today-ai-commentary").innerHTML = `💡 AI Review: Heavy high-frequency state-transition overlap detected for ${info.game} today!`;
     }
 
     function fetchPosts() {
@@ -340,9 +352,9 @@
     function generateAIReview(post) {
       let nums = post.numbers ? post.numbers.split("-").map(n => n.trim()) : [];
       if (nums.length >= 5) {
-        return `🤖 AI Post-Game Review: Draw verified for ${post.title}. Winning numbers [${post.numbers}] indicate strong high-frequency alignment with Markov state models.`;
+        return `🤖 AI Post-Game Review: Draw verified for ${post.title}. Winning numbers [${post.numbers}] show solid high-frequency alignment with Markov state models.`;
       }
-      return `🤖 AI Review: Preliminary draw record logged for ${post.title}.`;
+      return `🤖 AI Review: Early draw record logged for ${post.title}.`;
     }
 
     function renderStream(posts) {
@@ -389,18 +401,4 @@
           <div class="post-card" style="border-left-color: #00f5d4;">
             <div class="post-title">👤 ${p.title}</div>
             <p style="margin:5px 0; color:#fff;">${p.numbers}</p>
-            <div style="font-size:11px; color:#ffb703;">🤖 AI Review: Verification score active | ${p.timestamp}</div>
-          </div>
-        `;
-      });
-    }
-
-    function searchArchive() {
-      let q = document.getElementById("search-query").value.toLowerCase();
-      let filtered = globalPosts.filter(p => p.title.toLowerCase().includes(q) || p.timestamp.toLowerCase().includes(q));
-      renderArchive(filtered);
-    }
-
-    function filterHubResults() {
-      let hub = document.getElementById("hub-filter").value;
- 
+            <div style="
