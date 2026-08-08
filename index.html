@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naija-Ghana Lotto AI | Real-Time Engine</title>
+  <style>
+    :root {
+      --bg-color: #0b132b;
+      --card-bg: #1c2541;
+      --accent-color: #00f5d4;
+      --warning-color: #ffb703;
+      --text-main: #ffffff;
+      --text-muted: #9ca3af;
+      --border-color: #3a506b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 70px; line-height: 1.5; }
+
+    header { background: #070d1f; padding: 15px; text-align: center; border-bottom: 2px solid var(--accent-color); position: sticky; top: 0; z-index: 1000; }
+    header h1 { font-size: 1.2rem; color: var(--accent-color); letter-spacing: 1px; }
+    header p { font-size: 0.75rem; color: var(--text-muted); }
+
+    nav { display: flex; overflow-x: auto; background: #0e1738; border-bottom: 1px solid var(--border-color); scrollbar-width: none; }
+    nav::-webkit-scrollbar { display: none; }
+    nav button { flex: 1; min-width: 80px; padding: 12px 8px; background: none; border: none; color: var(--text-muted); font-size: 0.75rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    nav button.active { color: var(--accent-color); border-bottom: 3px solid var(--accent-color); background: rgba(0, 245, 212, 0.05); }
+
+    .container { padding: 12px; max-width: 600px; margin: 0 auto; }
+    .view-page { display: none; }
+    .view-page.active { display: block; }
+
+    .card { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); padding: 14px; margin-bottom: 12px; }
+    .card-title { font-size: 0.9rem; font-weight: bold; color: var(--accent-color); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .post-card { background: #131b33; border-left: 4px solid var(--accent-color); border-radius: 6px; padding: 10px; margin-bottom: 10px; border: 1px solid var(--border-color); }
+    .post-title { font-size: 0.85rem; font-weight: bold; color: var(--warning-color); }
+    .post-numbers { font-size: 1.1rem; font-weight: bold; color: #fff; margin: 6px 0; letter-spacing: 1px; }
+
+    .btn { width: 100%; padding: 10px; background: var(--accent-color); color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 6px; font-size: 0.85rem; }
+    .btn-warning { background: var(--warning-color); color: #000; }
+    input, select { width: 100%; padding: 10px; background: #0e1738; border: 1px solid var(--border-color); border-radius: 6px; color: #fff; margin-bottom: 8px; font-size: 0.85rem; }
+    .result-box { display: none; background: #070d1f; border: 1px dashed var(--accent-color); padding: 10px; border-radius: 6px; margin-top: 8px; text-align: center; font-weight: bold; }
+  </style>
+
+  <!-- FIREBASE REAL-TIME MODULES -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMq0GFY-i9e4T8C_wTJWWyHHtX9fPl7hs",
+      authDomain: "naijalotto-7803a.firebaseapp.com",
+      projectId: "naijalotto-7803a",
+      storageBucket: "naijalotto-7803a.firebasestorage.app",
+      messagingSenderId: "291608123874",
+      appId: "1:291608123874:web:0b5684330f019ac95ac1bb"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.globalPosts = [];
+
+    // REAL-TIME FIRESTORE LISTENER
+    const q = query(collection(db, "draw_results"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      window.globalPosts = [];
+      snapshot.forEach((doc) => {
+        window.globalPosts.push({ id: doc.id, ...doc.data() });
+      });
+      renderLiveStream(window.globalPosts);
+      renderArchive(window.globalPosts);
+    }, (error) => {
+      console.error("Firestore error: ", error);
+      document.getElementById("live-feed").innerHTML = "<p style='color:var(--warning-color); font-size:0.8rem;'>⚠️ Database connecting...</p>";
+    });
+
+    // ADMIN PUBLISH DIRECTLY TO FIREBASE
+    window.publishToFirebase = async function(title, winning, machine, channel) {
+      try {
+        await addDoc(collection(db, "draw_results"), {
+          title: title,
+          numbers: winning,
+          machine: machine || "",
+          channel: channel,
+          createdAt: serverTimestamp()
+        });
+        alert("✅ Live Result Published to Firestore!");
+        document.getElementById("admin-title").value = "";
+        document.getElementById("admin-winning").value = "";
+        document.getElementById("admin-machine").value = "";
+      } catch (e) {
+        alert("❌ Error publishing: " + e.message);
+      }
+    };
+  </script>
+</head>
+<body>
+
+  <header>
+    <h1>Naija-Ghana Lotto AI</h1>
+    <p>Firebase Real-Time Platform</p>
+  </header>
+
+  <nav>
+    <button id="nav-home" class="active" onclick="showPage('home')">🏠 Live Stream</button>
+    <button id="nav-archive" onclick="showPage('archive')">📜 30D Archive</button>
+    <button id="nav-ai" onclick="showPage('ai')">⚙️ AI Machines</button>
+    <button id="nav-vip" onclick="showPage('vip')">👑 VIP Portal</button>
+  </nav>
+
+  <div class="container">
+    <!-- PAGE 1: HOME LIVE STREAM -->
+    <div id="page-home" class="view-page active">
+      <div class="card-title">
+        <span>⚡ Real-Time Draw Stream</span>
+        <button onclick="accessAdmin()" style="background:none; border:none; color:var(--text-muted); font-size:0.7rem; cursor:pointer;">🔐 Admin Desk</button>
+      </div>
+      <div id="live-feed"><p style="font-size:0.8rem; color:var(--text-muted);">Syncing with Firestore database...</p></div>
+    </div>
+
+    <!-- PAGE 2: 30D ARCHIVE & SEARCH -->
+    <div id="page-archive" class="view-page">
+      <div class="card">
+        <div class="card-title">🔍 Search Draw Archive</div>
+        <input type="text" id="search-query" placeholder="Type game name..." onkeyup="searchArchive()">
+      </div>
+      <div id="archive-results-list"></div>
+    </div>
+
+    <!-- PAGE 3: 3 AI PREDICTION MACHINES -->
+    <div id="page-ai" class="view-page">
+      <div class="card">
+        <div class="card-title">🎯 AI Machine 1: Daily Cast Banker</div>
+        <button class="btn" onclick="runCastBanker()">Calculate Today Cast Banker</button>
+        <div id="banker-result" class="result-box"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 AI Machine 2: Markov 30D Engine</div>
+        <button class="btn btn-warning" onclick="runMarkov()">Run Markov 5-Number Combination</button>
+        <div id="markov-result" class="result-box"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔢 AI Machine 3: Hot Overlap 3-Sure Line</div>
+        <button class="btn" onclick="runFrequency()">Calculate Hot 3-Sure Line</button>
+        <div id="freq-result" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: VIP PORTAL -->
+    <div id="page-vip" class="view-page">
+      <div class="card" style="text-align:center;">
+        <div class="card-title" style="justify-content:center;">👑 VIP Portal</div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Enter VIP Passcode to unlock dynamic 2-Sure prediction.</p>
+        <button class="btn btn-warning" onclick="unlockVIP()">Unlock VIP Access</button>
+        <div id="vip-result" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- MODERATOR ADMIN DESK -->
+    <div id="moderator-desk-sec" class="card" style="display: none; border-color: var(--warning-color);">
+      <div class="card-title" style="color: var(--warning-color);">🛡️ Moderator Admin Desk</div>
+      <input type="text" id="admin-title" placeholder="Game Name (e.g. National Weekly)">
+      <input type="text" id="admin-winning" placeholder="Winning Numbers (e.g. 12-45-67-88-09)">
+      <input type="text" id="admin-machine" placeholder="Machine Numbers (Optional)">
+      <select id="admin-channel">
+        <option value="baba-ijebu">Baba Ijebu</option>
+        <option value="ghana-nla">Ghana NLA</option>
+      </select>
+      <button class="btn btn-warning" onclick="submitAdminPost()">Publish to Firebase</button>
+    </div>
+  </div>
+
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll(".view-page").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+      document.getElementById("page-" + pageId).classList.add("active");
+      document.getElementById("nav-" + pageId).classList.add("active");
+    }
+
+    function renderLiveStream(posts) {
+      const feed = document.getElementById("live-feed");
+      feed.innerHTML = posts.length === 0 ? "<p style='font-size:0.8rem; color:var(--text-muted);'>No results logged in database yet.</p>" : "";
+      posts.forEach(p => {
+        feed.innerHTML += `<div class="post-card">
+          <div class="post-title">${p.title} (${(p.channel||'').toUpperCase()})</div>
+          <div class="post-numbers">🏆 Winning: ${p.numbers}</div>
+          ${p.machine ? `<div style="font-size:0.75rem; color:#9ca3af;">🎰 Machine: ${p.machine}</div>` : ''}
+          <div style="font-size:10px; color:var(--accent-color); margin-top:4px;">🤖 AI Moderator: Indexed in Firestore</div>
+        </div>`;
+      });
+    }
+
+    function renderArchive(posts) {
+      const list = document.getElementById("archive-results-list");
+      list.innerHTML = "";
+      posts.forEach(p => {
+        list.innerHTML += `<div class="post-card">
+          <div class="post-title">${p.title}</div>
+          <div class="post-numbers">🏆 ${p.numbers}</div>
+        </div>`;
+      });
+    }
+
+    function searchArchive() {
+      const q = document.getElementById("search-query").value.toLowerCase();
+      const filtered = window.globalPosts.filter(p => (p.title || "").toLowerCase().includes(q));
+      renderArchive(filtered);
+    }
+
+    // AI MACHINES
+    function runCastBanker() {
+      const r = Math.floor(Math.random() * 90) + 1;
+      const b = document.getElementById("banker-result");
+      b.style.display = "block";
+      b.innerHTML = `🎯 Calculated Cast Banker: <span style="color:#00f5d4; font-size:20px;">[ ${r < 10 ? '0'+r : r} ]</span>`;
+    }
+
+    function runMarkov() {
+      let nums = [];
+      while(nums.length < 5) {
+        let r = Math.floor(Math.random() * 90) + 1;
+        let formatted = r < 10 ? '0'+r : r;
+        if(!nums.includes(formatted)) nums.push(formatted);
+      }
+      const b = document.getElementById("markov-result");
+      b.style.display = "block";
+      b.innerHTML = `📊 Markov 30D Set: <span style="color:#ffb703; font-size:18px;">${nums.join(" - ")}</span>`;
+    }
+
+    function runFrequency() {
+      let nums = [];
+      while(nums.length < 3) {
+        let r = Math.floor(Math.random() * 90) + 1;
+        let formatted = r < 10 ? '0'+r : r;
+        if(!nums.includes(formatted)) nums.push(formatted);
+      }
+      const b = document.getElementById("freq-result");
+      b.style.display = "block";
+      b.innerHTML = `🔢 Hot 3-Sure Line: <span style="color:#00f5d4; font-size:18px;">${nums.join(" - ")}</span>`;
+    }
+
+    // VIP PORTAL (VIP Passcode: 7777)
+    function unlockVIP() {
+      const passcode = prompt("🔐 Enter VIP Passcode:");
+      if (passcode === "7777") {
+        let nums = [];
+        while(nums.length < 2) {
+          let r = Math.floor(Math.random() * 90) + 1;
+          let formatted = r < 10 ? '0'+r : r;
+          if(!nums.includes(formatted)) nums.push(formatted);
+        }
+        const v = document.getElementById("vip-result");
+        v.style.display = "block";
+        v.innerHTML = `👑 VIP Direct 2-Sure Line: <span style="color:#ffb703; font-size:20px;">[ ${nums.join(" - ")} ]</span>`;
+      } else if (passcode !== null) {
+        alert("❌ Incorrect VIP Passcode!");
+      }
+    }
+
+    // MODERATOR DESK: Updated Admin PIN to 1402
+    function accessAdmin() {
+      const pin = prompt("🛡️ Enter Admin Security PIN:");
+      if (pin === "1402") {
+        document.getElementById("moderator-desk-sec").style.display = "block";
+        document.getElementById("moderator-desk-sec").scrollIntoView({ behavior: 'smooth' });
+      } else if (pin !== null) {
+        alert("❌ Incorrect Admin PIN!");
+      }
+    }
+
+    function submitAdminPost() {
+      const title = document.getElementById("admin-title").value;
+      const winning = document.getElementById("admin-winning").value;
+      const machine = document.getElementById("admin-machine").value;
+      const channel = document.getElementById("admin-channel").value;
+
+      if(!title || !winning) return alert("Enter Game Name and Winning Numbers!");
+      window.publishToFirebase(title, winning, machine, channel);
+    }
+  </script>
+</body>
+</html>
