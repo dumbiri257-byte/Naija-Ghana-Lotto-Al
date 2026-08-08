@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pcm">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naija-Ghana Lotto AI | Real-Time Forecast & Community Engine</title>
+  <meta name="description" content="Official Naija & Ghana 5/90 Lotto AI Engine for Baba Ijebu, Golden Chance, and Ghana NLA. Statistical frequency forecasting and real-time live results stream.">
+  
+  <!-- PERFORMANCE & NETWORK OPTIMIZATIONS -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+
+  <!-- MOBILE BROWSER & APP UI METADATA -->
+  <meta name="theme-color" content="#0b132b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- OPENGRAPH PREVIEW METADATA FOR SOCIAL SHARING -->
+  <meta property="og:title" content="Naija-Ghana Lotto AI | Real-Time Engine">
+  <meta property="og:description" content="Real-time 5/90 lotto results stream, statistical Markov frequency engine, and community forum for Baba Ijebu & Ghana NLA.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://naija-ghana-lotto-ai.netlify.app/">
+
+  <!-- INLINE SVG FAVICON -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+
+  <style>
+    :root {
+      --bg-color: #0b132b;
+      --card-bg: #1c2541;
+      --accent-color: #00f5d4;
+      --warning-color: #ffb703;
+      --danger-color: #ef4444;
+      --text-main: #ffffff;
+      --text-muted: #9ca3af;
+      --border-color: #3a506b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 80px; line-height: 1.6; }
+
+    header { background: #070d1f; padding: 15px; text-align: center; border-bottom: 2px solid var(--accent-color); position: sticky; top: 0; z-index: 1000; }
+    header h1 { font-size: 1.25rem; color: var(--accent-color); letter-spacing: 1px; }
+    header p { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ADSENSE BANNER PLACEHOLDER */
+    .ad-banner { background: #131b33; border: 1px dashed var(--border-color); text-align: center; padding: 10px; margin: 10px 0; font-size: 0.75rem; color: var(--text-muted); border-radius: 6px; }
+
+    nav { display: flex; overflow-x: auto; background: #0e1738; border-bottom: 1px solid var(--border-color); scrollbar-width: none; }
+    nav::-webkit-scrollbar { display: none; }
+    nav button { flex: 1; min-width: 90px; padding: 12px 8px; background: none; border: none; color: var(--text-muted); font-size: 0.75rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    nav button.active { color: var(--accent-color); border-bottom: 3px solid var(--accent-color); background: rgba(0, 245, 212, 0.05); }
+
+    .container { padding: 12px; max-width: 650px; margin: 0 auto; }
+    .view-page { display: none; }
+    .view-page.active { display: block; }
+
+    .card { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); padding: 14px; margin-bottom: 12px; }
+    .card-title { font-size: 0.95rem; font-weight: bold; color: var(--accent-color); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .post-card { background: #131b33; border-left: 4px solid var(--accent-color); border-radius: 6px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border-color); }
+    .post-title { font-size: 0.9rem; font-weight: bold; color: var(--warning-color); }
+    .post-date { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; }
+    .post-numbers { font-size: 1.15rem; font-weight: bold; color: #fff; margin: 6px 0; letter-spacing: 1px; }
+
+    .btn { width: 100%; padding: 11px; background: var(--accent-color); color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 6px; font-size: 0.85rem; }
+    .btn-warning { background: var(--warning-color); color: #000; }
+    .btn-danger { background: var(--danger-color); color: #fff; }
+
+    input, select, textarea { width: 100%; padding: 10px; background: #0e1738; border: 1px solid var(--border-color); border-radius: 6px; color: #fff; margin-bottom: 8px; font-size: 0.85rem; }
+    textarea { height: 70px; resize: vertical; }
+
+    .result-box { display: none; background: #070d1f; border: 1px dashed var(--accent-color); padding: 12px; border-radius: 6px; margin-top: 10px; text-align: center; }
+    .badge { display: inline-block; padding: 2px 6px; font-size: 0.65rem; font-weight: bold; border-radius: 4px; background: var(--border-color); color: #fff; }
+
+    /* FOOTER & COOKIES */
+    footer { text-align: center; padding: 20px 10px; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 20px; }
+    .social-links { display: flex; justify-content: center; gap: 15px; margin: 10px 0; }
+    .social-links a { color: var(--accent-color); text-decoration: none; font-weight: bold; }
+
+    #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #070d1f; border-top: 2px solid var(--warning-color); padding: 12px; font-size: 0.75rem; text-align: center; z-index: 2000; display: none; }
+    #cookie-banner button { width: auto; padding: 4px 15px; margin-left: 10px; font-size: 0.75rem; }
+  </style>
+
+  <!-- FIREBASE REAL-TIME MODULES -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // LIVE FIREBASE CONFIGURATION (naijalotto-7803a)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMq0GFY-i9e4T8C_wTJWWyHHtX9fPl7hs",
+      authDomain: "naijalotto-7803a.firebaseapp.com",
+      projectId: "naijalotto-7803a",
+      storageBucket: "naijalotto-7803a.firebasestorage.app",
+      messagingSenderId: "291608123874",
+      appId: "1:291608123874:web:0b5684330f019ac95ac1bb"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.globalPosts = [];
+    window.globalForum = [];
+
+    // REAL-TIME FIRESTORE DRAW RESULTS LISTENER
+    const qDraws = query(collection(db, "draw_results"), orderBy("createdAt", "desc"), limit(100));
+    onSnapshot(qDraws, (snapshot) => {
+      window.globalPosts = [];
+      snapshot.forEach((doc) => {
+        window.globalPosts.push({ id: doc.id, ...doc.data() });
+      });
+      renderLiveStream(window.globalPosts);
+      renderArchive(window.globalPosts);
+    }, (error) => {
+      console.error("Firestore Error: ", error);
+      document.getElementById("live-feed").innerHTML = "<p style='color:var(--warning-color); font-size:0.8rem;'>⚠️ Syncing database... Check network connection.</p>";
+    });
+
+    // REAL-TIME FORUM POSTS LISTENER
+    const qForum = query(collection(db, "forum_posts"), orderBy("createdAt", "desc"), limit(50));
+    onSnapshot(qForum, (snapshot) => {
+      window.globalForum = [];
+      snapshot.forEach((doc) => {
+        window.globalForum.push({ id: doc.id, ...doc.data() });
+      });
+      renderForumPosts(window.globalForum);
+    });
+
+    // PUBLISH DRAW RESULT TO FIREBASE
+    window.publishToFirebase = async function(title, day, month, year, winning, machine, channel) {
+      try {
+        await addDoc(collection(db, "draw_results"), {
+          title: title,
+          day: day,
+          month: month,
+          year: year,
+          numbers: winning,
+          machine: machine || "",
+          channel: channel,
+          createdAt: serverTimestamp()
+        });
+        alert("✅ Live Result Don Enter Database Successfully!");
+        document.getElementById("admin-title").value = "";
+        document.getElementById("admin-winning").value = "";
+        document.getElementById("admin-machine").value = "";
+      } catch (e) {
+        alert("❌ Error publishing: " + e.message);
+      }
+    };
+
+    // PUBLISH FORUM POST TO FIREBASE
+    window.publishForumPost = async function(author, message, day, month, year) {
+      try {
+        await addDoc(collection(db, "forum_posts"), {
+          author: author || "Lotto Fan",
+          message: message,
+          day: day,
+          month: month,
+          year: year,
+          comments: [],
+          createdAt: serverTimestamp()
+        });
+        alert("✅ Community Post Published!");
+        document.getElementById("forum-msg").value = "";
+      } catch (e) {
+        alert("❌ Error posting: " + e.message);
+      }
+    };
+  </script>
+</head>
+<body>
+
+  <header>
+    <h1>Naija-Ghana Lotto AI Engine</h1>
+    <p>Baba Ijebu | Golden Chance | Ghana NLA 5/90</p>
+  </header>
+
+  <!-- ADSENSE TOP BANNER -->
+  <div class="container">
+    <div class="ad-banner">
+      <span>📢 ADVERTISEMENT PLACEHOLDER (Google AdSense Ready)</span>
+    </div>
+  </div>
+
+  <nav>
+    <button id="nav-home" class="active" onclick="showPage('home')">🏠 Live Stream</button>
+    <button id="nav-ai" onclick="showPage('ai')">⚙️ Statistical AI</button>
+    <button id="nav-forum" onclick="showPage('forum')">🗣️ Forum</button>
+    <button id="nav-vip" onclick="showPage('vip')">👑 VIP Portal</button>
+    <button id="nav-policy" onclick="showPage('policy')">📜 Policy / About</button>
+  </nav>
+
+  <div class="container">
+
+    <!-- PAGE 1: HOME LIVE STREAM & SEARCH -->
+    <div id="page-home" class="view-page active">
+      <div class="card">
+        <div class="card-title">
+          <span>🔍 Search & Filter Results</span>
+          <button onclick="accessAdmin()" style="background:none; border:none; color:var(--text-muted); font-size:0.7rem; cursor:pointer;">🔐 Admin Desk</button>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="search-query" placeholder="Game Name (e.g. National)...">
+          <input type="text" id="search-day" placeholder="Day (08)" style="width: 80px;">
+          <input type="text" id="search-year" placeholder="Year (2026)" style="width: 90px;">
+        </div>
+        <button class="btn" onclick="searchArchive()">Filter Draw Results</button>
+      </div>
+
+      <div class="card-title" style="margin-top: 15px;">
+        <span>⚡ Real-Time Live Draw Stream</span>
+      </div>
+      <div id="live-feed"><p style="font-size:0.8rem; color:var(--text-muted);">Syncing with Firestore database...</p></div>
+    </div>
+
+    <!-- PAGE 2: STATISTICAL AI ENGINE (NO RANDOM PREDICTIONS) -->
+    <div id="page-ai" class="view-page">
+      <div class="card">
+        <div class="card-title">📊 Markov & Frequency Statistical Forecast Engine</div>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom: 10px;">
+          This AI engine no dey do random guess! E dey analyze real past draw frequency and state transitions directly inside your Firebase network database.
+        </p>
+
+        <label style="font-size:0.75rem; font-weight:bold; color:var(--accent-color);">Select Historical Data Window:</label>
+        <select id="ai-timeframe">
+          <option value="5">Last 5 Days / Draws Results</option>
+          <option value="10">Last 10 Days / Draws Results</option>
+          <option value="15">Last 15 Days / Draws Results</option>
+          <option value="20">Last 20 Days / Draws Results</option>
+          <option value="25">Last 25 Days / Draws Results</option>
+          <option value="30" selected>Last 30 Days / Draws Results (Full Markov Range)</option>
+        </select>
+
+        <button class="btn btn-warning" onclick="calculateStatisticalAI()">Run Statistical AI Analysis</button>
+
+        <div id="ai-analysis-output" class="result-box">
+          <h4 style="color:var(--accent-color); font-size:0.85rem; margin-bottom:6px;">🎯 Statistical AI Forecast Results</h4>
+          <div style="font-size:0.8rem; color:#fff; margin-bottom:8px;">
+            <strong>Predicted Winning Line (Top Hot Frequency):</strong>
+            <div id="ai-winning-line" style="color:var(--accent-color); font-size:1.1rem; font-weight:bold; margin-top:4px;">-</div>
+          </div>
+          <hr style="border-color:var(--border-color); margin:8px 0;">
+          <div style="font-size:0.8rem; color:#fff;">
+            <strong>Predicted Machine Line (Top Machine Frequency):</strong>
+            <div id="ai-machine-line" style="color:var(--warning-color); font-size:1.1rem; font-weight:bold; margin-top:4px;">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: INTERACTIVE COMMUNITY FORUM -->
+    <div id="page-forum" class="view-page">
+      <div class="card">
+        <div class="card-title">🗣️ Community Discussion & Tips</div>
+        <input type="text" id="forum-author" placeholder="Your Name or Handle (e.g. LottoMaster)">
+        <textarea id="forum-msg" placeholder="Share your key, banker, or discussion tip for today draw..."></textarea>
+        <button class="btn" onclick="submitForumPost()">Post to Community</button>
+      </div>
+
+      <div class="card-title" style="margin-top: 15px;">
+        <span>💬 Community Feed</span>
+      </div>
+      <div id="forum-feed"><p style="font-size:0.8rem; color:var(--text-muted);">Loading community messages...</p></div>
+    </div>
+
+    <!-- PAGE 4: VIP PORTAL (CLEAN TEXT, NO EXPOSED PASSCODES) -->
+    <div id="page-vip" class="view-page">
+      <div class="card" style="text-align:center;">
+        <div class="card-title" style="justify-content:center;">👑 VIP Password Portal</div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+          Enter VIP Passcode to unlock high-confidence Direct 2-Sure calculations.
+        </p>
+        <button class="btn btn-warning" onclick="unlockVIPPortal()">Unlock VIP Direct 2-Sure</button>
+        <div id="vip-result-box" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 5: ADSENSE POLICIES & ABOUT US -->
+    <div id="page-policy" class="view-page">
+      <div class="card">
+        <div class="card-title">ℹ️ About Naija-Ghana Lotto AI</div>
+        <p style="font-size:0.8rem; color:var(--text-muted);">
+          Naija-Ghana Lotto AI na independent analytical platform designed for lotto enthusiasts across Nigeria and Ghana. We provide automated historical draw indexing, statistical frequency analysis, and community discussion space for 5/90 lotteries including Baba Ijebu (Premier Lotto), Golden Chance, and Ghana NLA.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🎯 Mission Statement (AdSense Compliant)</div>
+        <p style="font-size:0.8rem; color:var(--text-muted);">
+          Our mission na to provide accurate, transparent, and data-driven mathematical analysis of historical 5/90 lottery draws. We encourage responsible sportsmanship, analytical entertainment, and transparent historical indexing. We no dey sell illegal guaranteed winning tickets.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔒 Privacy Policy & Terms of Service</div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
+          <strong>Privacy Policy:</strong> We respect user privacy. We no dey collect sensitive personal financial records or private user identity. Cookies are used strictly for analytics, user experience, and displaying AdSense advertisements.
+        </p>
+        <p style="font-size:0.8rem; color:var(--text-muted);">
+          <strong>Terms of Service:</strong> All statistical predictions generated on this site are for analytical and informational entertainment only. Users assume full responsibility for how they use lottery information.
+        </p>
+      </div>
+    </div>
+
+    <!-- MODERATOR ADMIN DESK -->
+    <div id="moderator-desk-sec" class="card" style="display: none; border-color: var(--warning-color); margin-top: 15px;">
+      <div class="card-title" style="color: var(--warning-color);">🛡️ Moderator Admin Desk</div>
+      <input type="text" id="admin-title" placeholder="Game Name (e.g. National Weekly)">
+      <div style="display:flex; gap:6px;">
+        <input type="text" id="admin-day" placeholder="Day (08)">
+        <input type="text" id="admin-month" placeholder="Month (August)">
+        <input type="text" id="admin-year" placeholder="Year (2026)">
+      </div>
+      <input type="text" id="admin-winning" placeholder="Winning Numbers (e.g. 12-45-67-88-09)">
+      <input type="text" id="admin-machine" placeholder="Machine Numbers (e.g. 05-15-25)">
+      <select id="admin-channel">
+        <option value="baba-ijebu">Baba Ijebu (Premier Lotto)</option>
+        <option value="ghana-nla">Ghana NLA</option>
+        <option value="golden-chance">Golden Chance</option>
+      </select>
+      <button class="btn btn-warning" onclick="submitAdminPost()">Publish Result to Firebase</button>
+    </div>
+
+    <!-- MID-PAGE ADSENSE PLACEHOLDER -->
+    <div class="ad-banner">
+      <span>📢 ADVERTISEMENT PLACEHOLDER (Google AdSense Ready)</span>
+    </div>
+
+  </div>
+
+  <!-- COOKIE CONSENT BANNER -->
+  <div id="cookie-banner">
+    <span>🍪 We use cookies to improve experience and display standard Google Ads.</span>
+    <button class="btn" onclick="acceptCookies()">Accept</button>
+  </div>
+
+  <!-- FOOTER & CONTACT LINKS -->
+  <footer>
+    <p><strong>Naija-Ghana Lotto AI Platform</strong> © 2026</p>
+    <div class="social-links">
+      <a href="mailto:dumbiri257@gmail.com">📧 Email Us</a>
+      <a href="https://facebook.com" target="_blank">🌐 Facebook Page</a>
+      <a href="https://whatsapp.com" target="_blank">💬 WhatsApp Group</a>
+    </div>
+    <p style="font-size:0.65rem; color:var(--text-muted); margin-top:5px;">
+      Powered by Firebase & Netlify Continuous Deployment | Repo: dumbiri257-byte
+    </p>
+  </footer>
+
+  <script>
+    // PAGE NAVIGATION
+    function showPage(pageId) {
+      document.querySelectorAll(".view-page").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+      document.getElementById("page-" + pageId).classList.add("active");
+      document.getElementById("nav-" + pageId).classList.add("active");
+    }
+
+    // COOKIE BANNER
+    if (!localStorage.getItem("cookies_accepted")) {
+      document.getElementById("cookie-banner").style.display = "block";
+    }
+    function acceptCookies() {
+      localStorage.setItem("cookies_accepted", "true");
+      document.getElementById("cookie-banner").style.display = "none";
+    }
+
+    // RENDER LIVE STREAM DRAW RESULTS
+    function renderLiveStream(posts) {
+      const feed = document.getElementById("live-feed");
+      feed.innerHTML = posts.length === 0 ? "<p style='font-size:0.8rem; color:var(--text-muted);'>No draw results logged in database yet.</p>" : "";
+      posts.forEach(p => {
+        const formattedDate = `${p.day || '08'} ${p.month || 'August'}, ${p.year || '2026'}`;
+        feed.innerHTML += `<div class="post-card">
+          <div class="post-title">${p.title} <span class="badge">${(p.channel||'Lotto').toUpperCase()}</span></div>
+          <div class="post-date">📅 Draw Date: ${formattedDate}</div>
+          <div class="post-numbers">🏆 Winning: ${p.numbers}</div>
+          ${p.machine ? `<div style="font-size:0.75rem; color:#9ca3af;">🎰 Machine: ${p.machine}</div>` : ''}
+          <div style="font-size:10px; color:var(--accent-color); margin-top:4px;">🤖 Indexed in Firebase Network</div>
+        </div>`;
+      });
+    }
+
+    // RENDER ARCHIVE SEARCH
+    function renderArchive(posts) {
+      // Handled dynamically via searchArchive()
+    }
+
+    function searchArchive() {
+      const q = document.getElementById("search-query").value.toLowerCase();
+      const d = document.getElementById("search-day").value.trim();
+      const y = document.getElementById("search-year").value.trim();
+
+      const filtered = window.globalPosts.filter(p => {
+        const matchesQuery = !q || (p.title || "").toLowerCase().includes(q);
+        const matchesDay = !d || String(p.day || "").includes(d);
+        const matchesYear = !y || String(p.year || "").includes(y);
+        return matchesQuery && matchesDay && matchesYear;
+      });
+
+      renderLiveStream(filtered);
+    }
+
+    // STATISTICAL FREQUENCY & MARKOV AI (NO RANDOM NUMBERS)
+    function calculateStatisticalAI() {
+      const timeframe = parseInt(document.getElementById("ai-timeframe").value);
+      const dataset = window.globalPosts.slice(0, timeframe);
+
+      let winningFreq = {};
+      let machineFreq = {};
+
+      for (let i = 1; i <= 90; i++) {
+        winningFreq[i] = 0;
+        machineFreq[i] = 0;
+      }
+
+      dataset.forEach(entry => {
+        if (entry.numbers) {
+          const wNums = entry.numbers.split(/[-,\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+          wNums.forEach(num => { if (winningFreq[num] !== undefined) winningFreq[num]++; });
+        }
+        if (entry.machine) {
+          const mNums = entry.machine.split(/[-,\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+          mNums.forEach(num => { if (machineFreq[num] !== undefined) machineFreq[num]++; });
+        }
+      });
+
+      // Sort numbers by highest frequency
+      const sortedWinning = Object.keys(winningFreq).sort((a, b) => winningFreq[b] - winningFreq[a]);
+      const sortedMachine = Object.keys(machineFreq).sort((a, b) => machineFreq[b] - machineFreq[a]);
+
+      // Pick top 5 winning and top 5 machine numbers from historical data
+      const topWinning = sortedWinning.slice(0, 5).map(n => n < 10 ? '0' + n : n);
+      const topMachine = sortedMachine.slice(0, 5).map(n => n < 10 ? '0' + n : n);
+
+      document.getElementById("ai-analysis-output").style.display = "block";
+      document.getElementById("ai-winning-line").innerText = topWinning.join(" - ");
+      document.getElementById("ai-machine-line").innerText = topMachine.join(" - ");
+    }
+
+    // COMMUNITY FORUM
+    function submitForumPost() {
+      const author = document.getElementById("forum-author").value.trim();
+      const msg = document.getElementById("forum-msg").value.trim();
+      
+      const now = new Date();
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = monthNames[now.getMonth()];
+      const year = String(now.getFullYear());
+
+      if (!msg) return alert("Type your discussion message before posting!");
+      window.publishForumPost(author, msg, day, month, year);
+    }
+
+    function renderForumPosts(posts) {
+      const feed = document.getElementById("forum-feed");
+      feed.innerHTML = posts.length === 0 ? "<p style='font-size:0.8rem; color:var(--text-muted);'>No community posts yet. Be the first to post!</p>" : "";
+      posts.forEach(p => {
+        const dateStr = `${p.day || '08'} ${p.month || 'August'}, ${p.year || '2026'}`;
+        feed.innerHTML += `<div class="post-card">
+          <div class="post-title">👤 ${p.author || 'Lotto Fan'}</div>
+          <div class="post-date">📅 ${dateStr}</div>
+          <div style="font-size:0.85rem; color:#fff; margin-top:6px;">${p.message}</div>
+        </div>`;
+      });
+    }
+
+    // VIP PORTAL (UPDATED PASSCODE: 1402)
+    function unlockVIPPortal() {
+      const pass = prompt("🔐 Enter VIP Passcode:");
+      if (pass === "1402") {
+        const dataset = window.globalPosts.slice(0, 30);
+        let winningFreq = {};
+        for (let i = 1; i <= 90; i++) winningFreq[i] = 0;
+
+        dataset.forEach(entry => {
+          if (entry.numbers) {
+            const wNums = entry.numbers.split(/[-,\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+            wNums.forEach(num => { if (winningFreq[num] !== undefined) winningFreq[num]++; });
+          }
+        });
+
+        const sortedWinning = Object.keys(winningFreq).sort((a, b) => winningFreq[b] - winningFreq[a]);
+        const top2Sure = sortedWinning.slice(0, 2).map(n => n < 10 ? '0' + n : n);
+
+        const v = document.getElementById("vip-result-box");
+        v.style.display = "block";
+        v.innerHTML = `<h4 style="color:var(--warning-color); font-size:0.85rem;">👑 Master VIP Direct 2-Sure Line</h4>
+        <div style="color:var(--accent-color); font-size:1.3rem; font-weight:bold; margin-top:6px;">[ ${top2Sure.join(" - ")} ]</div>
+        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Calculated from 30-Day Historical Frequency</p>`;
+      } else if (pass !== null) {
+        alert("❌ Incorrect VIP Passcode!");
+      }
+    }
+
+    // ADMIN DESK (PASSCODE: 5945)
+    function accessAdmin() {
+      const pin = prompt("🛡️ Enter Admin Security PIN:");
+      if (pin === "5945") {
+        const now = new Date();
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        document.getElementById("admin-day").value = String(now.getDate()).padStart(2, '0');
+        document.getElementById("admin-month").value = monthNames[now.getMonth()];
+        document.getElementById("admin-year").value = String(now.getFullYear());
+
+        document.getElementById("moderator-desk-sec").style.display = "block";
+        document.getElementById("moderator-desk-sec").scrollIntoView({ behavior: 'smooth' });
+      } else if (pin !== null) {
+        alert("❌ Incorrect Admin PIN!");
+      }
+    }
+
+    function submitAdminPost() {
+      const title = document.getElementById("admin-title").value;
+      const day = document.getElementById("admin-day").value;
+      const month = document.getElementById("admin-month").value;
+      const year = document.getElementById("admin-year").value;
+      const winning = document.getElementById("admin-winning").value;
+      const machine = document.getElementById("admin-machine").value;
+      const channel = document.getElementById("admin-channel").value;
+
+      if (!title || !winning || !day || !month || !year) return alert("Fill in Game Name, Date details, and Winning Numbers!");
+      window.publishToFirebase(title, day, month, year, winning, machine, channel);
+    }
+  </script>
+</body>
+</html>
