@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naija-Ghana Lotto AI Engine (Live Cloud & Admin Suite)</title>
+  
+  <!-- Firebase JS SDK (Compat Version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #f59e0b;
+      --accent-hover: #d97706;
+      --text-color: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --success-color: #22c55e;
+      --danger-color: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-color); padding: 15px; max-width: 1200px; margin: 0 auto; }
+
+    header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--border-color); margin-bottom: 20px; }
+    header h1 { color: var(--accent-color); font-size: 1.8rem; margin-bottom: 5px; }
+    header p { color: var(--text-muted); font-size: 0.95rem; }
+
+    .sync-status { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: bold; background: #334155; padding: 4px 12px; border-radius: 20px; margin-top: 8px; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #94a3b8; }
+    .status-dot.online { background: var(--success-color); box-shadow: 0 0 8px var(--success-color); }
+
+    .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+    .tab-btn.active, .tab-btn:hover { background: var(--accent-color); color: #000; border-color: var(--accent-color); }
+
+    .tab-content { display: none; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
+    .tab-content.active { display: block; }
+
+    h2 { color: var(--accent-color); font-size: 1.4rem; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 0.9rem; }
+    input, select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: #0f172a; color: #fff; font-size: 1rem; word-break: break-all; }
+    textarea { height: 120px; font-family: inherit; resize: vertical; }
+
+    .btn { background: var(--accent-color); color: #000; font-weight: bold; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; transition: 0.2s; font-size: 1rem; }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-secondary { background: #475569; color: #fff; margin-top: 10px; }
+
+    .ball-container { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .ball { width: 38px; height: 38px; border-radius: 50%; background: #334155; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; border: 2px solid var(--accent-color); }
+    .ball.machine { border-color: #94a3b8; background: #1e293b; color: #94a3b8; }
+
+    .card { background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+    .card-title { font-weight: bold; color: var(--accent-color); font-size: 1.1rem; }
+    .card-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+    .stat-badge { background: #334155; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: inline-block; margin-left: 6px; color: var(--accent-color); }
+
+    .alert { padding: 12px; border-radius: 6px; margin-top: 12px; font-size: 0.95rem; font-weight: bold; word-break: break-word; }
+    .alert-success { background: rgba(34, 197, 94, 0.2); border: 1px solid var(--success-color); color: var(--success-color); }
+    .alert-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger-color); color: var(--danger-color); }
+    .alert-info { background: rgba(245, 158, 11, 0.2); border: 1px solid var(--accent-color); color: var(--accent-color); }
+
+    .vip-banner { background: linear-gradient(135deg, #f59e0b, #b45309); color: #000; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 15px; }
+
+    .forum-post { border-left: 3px solid var(--accent-color); background: #0f172a; padding: 12px; border-radius: 0 8px 8px 0; margin-bottom: 12px; word-break: break-word; }
+    .forum-user { font-weight: bold; color: var(--accent-color); font-size: 0.95rem; }
+    .forum-time { font-size: 0.75rem; color: var(--text-muted); float: right; }
+    .forum-body { margin-top: 6px; font-size: 0.95rem; line-height: 1.4; }
+
+    /* ADMIN ANALYTICS TABLE STYLES */
+    .admin-stats-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; text-align: center; }
+    .admin-stats-table th, .admin-stats-table td { padding: 8px; border: 1px solid var(--border-color); }
+    .admin-stats-table th { background: #0f172a; color: var(--accent-color); }
+    .admin-stats-table td { background: #131b33; }
+    .location-tag { display: inline-block; background: #334155; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin: 2px; color: var(--accent-color); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎯 Naija-Ghana Lotto AI Engine</h1>
+    <p>Multi-Channel Forecasts, Community Forum & Live Database Sync</p>
+    <div class="sync-status">
+      <div id="status-dot" class="status-dot"></div>
+      <span id="status-text">Connecting to Live Database...</span>
+    </div>
+  </header>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab(event, 'results-tab')">📊 Results & Checker</button>
+    <button class="tab-btn" onclick="switchTab(event, 'forum-tab')">💬 Community Forum</button>
+    <button class="tab-btn" onclick="switchTab(event, 'markov-tab')">🧠 Markov AI Forecast</button>
+    <button class="tab-btn" onclick="switchTab(event, 'vip-tab')">👑 VIP Portal</button>
+    <button class="tab-btn" onclick="switchTab(event, 'stats-tab')">📈 Analytics</button>
+    <button class="tab-btn" onclick="switchTab(event, 'admin-tab')">🛠️ Admin Desk</button>
+  </div>
+
+  <!-- TAB 1: RESULTS & TICKET CHECKER -->
+  <div id="results-tab" class="tab-content active">
+    <h2>📊 Live Database Feed & Universal Ticket Checker</h2>
+    
+    <div class="grid-2">
+      <div>
+        <h3>🔍 Verify Your Ticket</h3>
+        <div class="form-group" style="margin-top:10px;">
+          <label>Select Channel & Matrix Format:</label>
+          <select id="check-channel">
+            <option value="baba-ijebu">Baba Ijebu (5/90)</option>
+            <option value="golden-chance">Golden Chance (5/90)</option>
+            <option value="ghana-nla-590">Ghana NLA (5/90 Standard)</option>
+            <option value="ghana-nla-539">Ghana NLA (5/39 Daywa)</option>
+            <option value="ghana-nla-628">Ghana NLA (6/28 Super 6)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Game Title:</label>
+          <input type="text" id="check-title" placeholder="e.g. Daywa 5/39, Monday Special, Super 6">
+        </div>
+        <div class="form-group">
+          <label>Your Numbers (Separated by hyphens, spaces, or commas):</label>
+          <input type="text" id="check-numbers" placeholder="e.g. 18-42-65 or 18 42 65">
+        </div>
+        <button class="btn" onclick="runTicketChecker()">Check Winning Status</button>
+        <div id="checker-output"></div>
+      </div>
+
+      <div>
+        <h3>📰 Live Published Results Feed</h3>
+        <div class="form-group" style="margin-top:10px;">
+          <label>Filter Channel & Matrix:</label>
+          <select id="feed-filter" onchange="renderFeed()">
+            <option value="all">All Channels & Matrices</option>
+            <option value="baba-ijebu">Baba Ijebu (5/90)</option>
+            <option value="golden-chance">Golden Chance (5/90)</option>
+            <option value="ghana-nla-590">Ghana NLA (5/90)</option>
+            <option value="ghana-nla-539">Ghana NLA Daywa (5/39)</option>
+            <option value="ghana-nla-628">Ghana NLA Super 6 (6/28)</option>
+          </select>
+        </div>
+        <div id="results-feed"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: COMMUNITY FORUM -->
+  <div id="forum-tab" class="tab-content">
+    <h2>💬 Community Predictions & Discussion Forum</h2>
+    
+    <div class="grid-2">
+      <div>
+        <h3>📝 Post Your Prediction / Banker</h3>
+        <div class="form-group" style="margin-top:10px;">
+          <label>Your Name / Handle:</label>
+          <input type="text" id="forum-username" placeholder="e.g. Master Predictor 257">
+        </div>
+        <div class="form-group">
+          <label>Target Game & Channel:</label>
+          <input type="text" id="forum-game" placeholder="e.g. Ghana Monday Special (5/90)">
+        </div>
+        <div class="form-group">
+          <label>Banker Numbers (Optional):</label>
+          <input type="text" id="forum-bankers" placeholder="e.g. 14 - 39 - 88">
+        </div>
+        <div class="form-group">
+          <label>Comment / Analysis:</label>
+          <textarea id="forum-comment" placeholder="Share your key analysis or counter-key prediction..."></textarea>
+        </div>
+        <button class="btn" onclick="publishForumPost()">🚀 Share Post To Forum</button>
+      </div>
+
+      <div>
+        <h3>🔥 Live Community Posts</h3>
+        <div id="forum-posts-container" style="margin-top:10px;">
+          <p style="color:var(--text-muted);">Syncing live forum posts...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: MARKOV AI FORECAST ENGINE -->
+  <div id="markov-tab" class="tab-content">
+    <h2>🧠 Smart Markov AI Forecast Engine</h2>
+    <p style="color:var(--text-muted); margin-bottom:15px;">Calculates matrix-specific transition probabilities directly from your live database records.</p>
+    
+    <div class="form-group">
+      <label>Target Channel & Matrix Pool:</label>
+      <select id="markov-channel">
+        <option value="baba-ijebu">Baba Ijebu (5/90 Pool)</option>
+        <option value="golden-chance">Golden Chance (5/90 Pool)</option>
+        <option value="ghana-nla-590">Ghana NLA (5/90 Pool)</option>
+        <option value="ghana-nla-539">Ghana NLA Daywa (5/39 Pool)</option>
+        <option value="ghana-nla-628">Ghana NLA Super 6 (6/28 Pool)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Exact Game Title:</label>
+      <input type="text" id="markov-title" placeholder="e.g. Ghana Daywa, Monday Special, Ghana Super 6">
+    </div>
+    <button class="btn" onclick="runMarkovEngine()">🚀 Run Markov Calculation</button>
+
+    <div id="markov-output" style="margin-top:20px;"></div>
+  </div>
+
+  <!-- TAB 4: VIP PORTAL -->
+  <div id="vip-tab" class="tab-content">
+    <h2>👑 VIP Intelligence Desk</h2>
+    
+    <div id="vip-login-section">
+      <div class="vip-banner">🔒 Private VIP Portal Access</div>
+      <div class="form-group">
+        <label>Enter VIP Passcode:</label>
+        <input type="password" id="vip-passcode-input" placeholder="••••••••">
+      </div>
+      <button class="btn" onclick="submitVipLogin()">Unlock VIP Dashboard</button>
+      <p style="text-align:center; margin-top:15px; color:var(--text-muted); font-size:0.9rem;">
+        Need access? Contact Moderator on WhatsApp: <strong>+234 903 965 8634</strong> (WhatsApp Only)
+      </p>
+    </div>
+
+    <div id="vip-dashboard-section" style="display:none;">
+      <div class="alert alert-success" id="vip-welcome-badge"></div>
+      <button class="btn btn-secondary" onclick="logoutVip()">Lock VIP Portal</button>
+      
+      <h3 style="margin-top:20px;">🎯 VIP Deep Query & High-Probability Directs</h3>
+      <div class="form-group" style="margin-top:10px;">
+        <label>Select Channel & Matrix Format:</label>
+        <select id="vip-query-channel">
+          <option value="baba-ijebu">Baba Ijebu (5/90)</option>
+          <option value="golden-chance">Golden Chance (5/90)</option>
+          <option value="ghana-nla-590">Ghana NLA (5/90)</option>
+          <option value="ghana-nla-539">Ghana NLA Daywa (5/39)</option>
+          <option value="ghana-nla-628">Ghana NLA Super 6 (6/28)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Game Title:</label>
+        <input type="text" id="vip-query-title" placeholder="e.g., Ghana Monday Special, Daywa 5/39, Super 6">
+      </div>
+      <button class="btn" onclick="runVipQuery()">Execute VIP Query</button>
+
+      <div id="vip-query-output" style="margin-top:20px;"></div>
+    </div>
+  </div>
+
+  <!-- TAB 5: CHANNEL STATISTICS -->
+  <div id="stats-tab" class="tab-content">
+    <h2>📈 Multi-Channel Matrix Analytics Suite</h2>
+    
+    <div class="form-group">
+      <label>Select Channel & Matrix Format to Analyze:</label>
+      <select id="stats-channel" onchange="renderStats()">
+        <option value="ghana-nla-590">Ghana NLA (5/90 Matrix)</option>
+        <option value="ghana-nla-539">Ghana NLA Daywa (5/39 Matrix)</option>
+        <option value="ghana-nla-628">Ghana NLA Super 6 (6/28 Matrix)</option>
+        <option value="baba-ijebu">Baba Ijebu (5/90 Matrix)</option>
+        <option value="golden-chance">Golden Chance (5/90 Matrix)</option>
+      </select>
+    </div>
+
+    <div id="stats-output"></div>
+  </div>
+
+  <!-- TAB 6: ADMIN DESK (5945) -->
+  <div id="admin-tab" class="tab-content">
+    <h2>🛠️ Password Protected Admin Desk</h2>
+    
+    <div id="admin-auth-box">
+      <div class="form-group">
+        <label>Enter Admin PIN:</label>
+        <input type="password" id="admin-pin-input" placeholder="••••">
+      </div>
+      <button class="btn" onclick="verifyAdminPin()">Unlock Admin Desk</button>
+    </div>
+
+    <div id="admin-panel" style="display:none;">
+      <div class="alert alert-info">🔓 Admin Mode Unlocked</div>
+      
+      <!-- ADMIN ANALYTICS DASHBOARD -->
+      <h3 style="margin-top:20px; color:var(--accent-color);">📈 System Stats & Analytics Suite</h3>
+      <table class="admin-stats-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Today</th>
+            <th>Yesterday</th>
+            <th>Last 30 Days</th>
+            <th>All Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>📝 Posts (Draws)</strong></td>
+            <td id="stat-posts-today">0</td>
+            <td id="stat-posts-yesterday">0</td>
+            <td id="stat-posts-month">0</td>
+            <td id="stat-posts-all">0</td>
+          </tr>
+          <tr>
+            <td><strong>💬 Comments (Forum)</strong></td>
+            <td id="stat-comments-today">0</td>
+            <td id="stat-comments-yesterday">0</td>
+            <td id="stat-comments-month">0</td>
+            <td id="stat-comments-all">0</td>
+          </tr>
+          <tr>
+            <td><strong>👥 Users / Views</strong></td>
+            <td id="stat-views-today">0</td>
+            <td id="stat-views-yesterday">0</td>
+            <td id="stat-views-month">0</td>
+            <td id="stat-views-all">0</td>
+          </tr>
+          <tr>
+            <td><strong>👑 VIP Unlocks</strong></td>
+            <td id="stat-vip-today">0</td>
+            <td id="stat-vip-yesterday">0</td>
+            <td id="stat-vip-month">0</td>
+            <td id="stat-vip-all">0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- VISITOR LOCATIONS & FOLLOWERS -->
+      <div class="card" style="margin-top:15px;">
+        <div class="card-title">🌍 Followers & Visitor Locations</div>
+        <div id="admin-locations-container">
+          <p style="color:var(--text-muted); font-size:0.85rem;">Tracking visitor location coordinates...</p>
+        </div>
+      </div>
+
+      <!-- ADMIN SETTINGS CONTROL PANEL -->
+      <div class="card" style="margin-top:15px;">
+        <div class="card-title">⚙️ Admin Control & Settings</div>
+        <div class="grid-2">
+          <button class="btn btn-secondary" onclick="renderAdminAnalytics()">🔄 Refresh Analytics Data</button>
+          <button class="btn btn-secondary" onclick="localStorage.clear(); alert('Local Cache Cleared!');">🧹 Clear Local Cache</button>
+        </div>
+      </div>
+
+      <hr style="border-color:var(--border-color); margin:20px 0;">
+
+      <!-- BULK UPLOADER -->
+      <h3>📦 Option B: Paste & Publish Bulk JSON Results Array</h3>
+      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:10px;">Paste formatted JSON results. Uploading syncs live across all user devices in real time.</p>
+      
+      <div class="form-group">
+        <textarea id="bulk-json-input" placeholder='[&#10;  {&#10;    "title": "Ghana Daywa 5/39",&#10;    "day": "10",&#10;    "month": "August",&#10;    "year": "2026",&#10;    "numbers": "28-24-39-23-19",&#10;    "machine": "12-05-18-31-07",&#10;    "channel": "ghana-nla-539"&#10;  }&#10;]'></textarea>
+      </div>
+      <button class="btn" onclick="uploadBulkJson()">🚀 Upload Bulk JSON to Live Cloud</button>
+    </div>
+  </div>
+
+  <script>
+    // ==================================================================
+    // 🔑 LIVE FIREBASE CLOUD CONFIGURATION (naijalotto-7803a)
+    // ==================================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMq0GFY-i9e4T8C_wTJWWyHHtX9fPl7hs",
+      authDomain: "naijalotto-7803a.firebaseapp.com",
+      projectId: "naijalotto-7803a",
+      storageBucket: "naijalotto-7803a.firebasestorage.app",
+      messagingSenderId: "291608123874",
+      appId: "1:291608123874:web:0b5684330f019ac95ac1bb"
+    };
+
+    let cloudResultsDatabase = [];
+    let cloudForumPosts = [];
+    let cloudPageViews = [];
+    let cloudVipLogs = [];
+    let dbInstance = null;
+
+    // Helper: HTML Sanitizer to prevent XSS and layout breaking
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Visitor Location & Page View Tracking
+    async function trackVisitorLocation() {
+      try {
+        if (!sessionStorage.getItem("pv_tracked") && dbInstance) {
+          sessionStorage.setItem("pv_tracked", "true");
+          let locationStr = "Agbor, Delta, Nigeria";
+          try {
+            const res = await fetch("https://ipapi.co/json/");
+            if (res.ok) {
+              const data = await res.json();
+              locationStr = `${data.city || 'Agbor'}, ${data.region || 'Delta'}, ${data.country_name || 'Nigeria'}`;
+            }
+          } catch(e) {
+            locationStr = "Nigeria";
+          }
+
+          await dbInstance.collection("page_views").add({
+            location: locationStr,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+      } catch (e) {
+        console.warn("Analytics tracking error:", e);
+      }
+    }
+
+    // Initialize Firebase connection safely
+    try {
+      if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        dbInstance = firebase.firestore();
+
+        // 1. Live Listener for Draw Results
+        dbInstance.collection("draw_results")
+          .orderBy("createdAt", "desc")
+          .onSnapshot((snapshot) => {
+            cloudResultsDatabase = [];
+            snapshot.forEach((doc) => {
+              cloudResultsDatabase.push({ id: doc.id, ...doc.data() });
+            });
+
+            const statusDot = document.getElementById("status-dot");
+            const statusText = document.getElementById("status-text");
+            if (statusDot) statusDot.classList.add("online");
+            if (statusText) statusText.innerText = `Database Connected (${cloudResultsDatabase.length} records active)`;
+            renderFeed();
+            renderAdminAnalytics();
+          }, (error) => {
+            console.warn("Firestore results listener error:", error);
+          });
+
+        // 2. Live Listener for Forum Posts
+        dbInstance.collection("forum_posts")
+          .orderBy("createdAt", "desc")
+          .onSnapshot((snapshot) => {
+            cloudForumPosts = [];
+            snapshot.forEach((doc) => {
+              cloudForumPosts.push({ id: doc.id, ...doc.data() });
+            });
+            renderForumFeed();
+            renderAdminAnalytics();
+          }, (error) => {
+            console.warn("Firestore forum listener error:", error);
+          });
+
+        // 3. Live Listener for Page Views & Visitor Tracking
+        dbInstance.collection("page_views")
+          .orderBy("createdAt", "desc")
+          .onSnapshot((snapshot) => {
+            cloudPageViews = [];
+            snapshot.forEach((doc) => {
+              cloudPageViews.push({ id: doc.id, ...doc.data() });
+            });
+            renderAdminAnalytics();
+          }, (error) => {
+            console.warn("Firestore page views listener error:", error);
+          });
+
+        // 4. Live Listener for VIP Unlocks
+        dbInstance.collection("vip_logs")
+          .orderBy("createdAt", "desc")
+          .onSnapshot((snapshot) => {
+            cloudVipLogs = [];
+            snapshot.forEach((doc) => {
+              cloudVipLogs.push({ id: doc.id, ...doc.data() });
+            });
+            renderAdminAnalytics();
+          }, (error) => {
+            console.warn("Firestore VIP logs listener error:", error);
+          });
+
+        trackVisitorLocation();
+      }
+    } catch (e) {
+      console.error("Firebase Initialization Error:", e);
+      const statusText = document.getElementById("status-text");
+      if (statusText) statusText.innerText = "Offline Mode — Check Firebase Config";
+    }
+
+    // --- TAB SWITCHER ---
+    function switchTab(evt, tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) targetTab.classList.add('active');
+
+      if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add('active');
+      }
+
+      if (tabId === 'results-tab') renderFeed();
+      if (tabId === 'forum-tab') renderForumFeed();
+      if (tabId === 'stats-tab') renderStats();
+      if (tabId === 'vip-tab') checkVipSession();
+      if (tabId === 'admin-tab') renderAdminAnalytics();
+    }
+
+    // --- MATRIX DETECTOR ---
+    function getGameMatrixConfig(channelOrTitle) {
+      const text = (channelOrTitle || "").toLowerCase();
+      if (text.includes("539") || text.includes("daywa")) return { maxNum: 39, drawSize: 5, format: "5/39" };
+      if (text.includes("628") || text.includes("super 6") || text.includes("super6")) return { maxNum: 28, drawSize: 6, format: "6/28" };
+      return { maxNum: 90, drawSize: 5, format: "5/90" };
+    }
+
+    // --- ADMIN STATS CALCULATOR (TODAY / YESTERDAY / LAST MONTH / ALL TIME) ---
+    function calculateTimeframeBreakdown(items) {
+      const now = new Date();
+      const todayStr = now.toDateString();
+
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toDateString();
+
+      const last30Days = new Date(now);
+      last30Days.setDate(last30Days.getDate() - 30);
+
+      let todayCount = 0;
+      let yesterdayCount = 0;
+      let monthCount = 0;
+      let allCount = items.length;
+
+      items.forEach(item => {
+        let itemDate = null;
+        if (item.createdAt && item.createdAt.seconds) {
+          itemDate = new Date(item.createdAt.seconds * 1000);
+        } else if (item.year && item.month && item.day) {
+          itemDate = new Date(`${item.month} ${item.day}, ${item.year}`);
+        }
+
+        if (itemDate && !isNaN(itemDate.getTime())) {
+          const itemDateStr = itemDate.toDateString();
+          if (itemDateStr === todayStr) todayCount++;
+          if (itemDateStr === yesterdayStr) yesterdayCount++;
+          if (itemDate >= last30Days) monthCount++;
+        }
+      });
+
+      return { today: todayCount, yesterday: yesterdayCount, month: monthCount, all: allCount };
+    }
+
+    function renderAdminAnalytics() {
+      const adminPanel = document.getElementById("admin-panel");
+      if (!adminPanel || adminPanel.style.display === "none") return;
+
+      const postsData = calculateTimeframeBreakdown(cloudResultsDatabase);
+      const commentsData = calculateTimeframeBreakdown(cloudForumPosts);
+      const viewsData = calculateTimeframeBreakdown(cloudPageViews);
+      const vipData = calculateTimeframeBreakdown(cloudVipLogs);
+
+      // Populate Posts
+      document.getElementById("stat-posts-today").innerText = postsData.today;
+      document.getElementById("stat-posts-yesterday").innerText = postsData.yesterday;
+      document.getElementById("stat-posts-month").innerText = postsData.month;
+      document.getElementById("stat-posts-all").innerText = postsData.all;
+
+      // Populate Comments
+      document.getElementById("stat-comments-today").innerText = commentsData.today;
+      document.getElementById("stat-comments-yesterday").innerText = commentsData.yesterday;
+      document.getElementById("stat-comments-month").innerText = commentsData.month;
+      document.getElementById("stat-comments-all").innerText = commentsData.all;
+
+      // Populate Views / Users
+      document.getElementById("stat-views-today").innerText = viewsData.today;
+      document.getElementById("stat-views-yesterday").innerText = viewsData.yesterday;
+      document.getElementById("stat-views-month").innerText = viewsData.month;
+      document.getElementById("stat-views-all").innerText = viewsData.all;
+
+      // Populate VIP
+      document.getElementById("stat-vip-today").innerText = vipData.today;
+      document.getElementById("stat-vip-yesterday").innerText = vipData.yesterday;
+      document.getElementById("stat-vip-month").innerText = vipData.month;
+      document.getElementById("stat-vip-all").innerText = vipData.all;
+
+      // Render Locations Tag Cloud
+      const locContainer = document.getElementById("admin-locations-container");
+      if (locContainer) {
+        const locationMap = {};
+        cloudPageViews.forEach(v => {
+          const loc = v.location || "Nigeria";
+          locationMap[loc] = (locationMap[loc] || 0) + 1;
+        });
+
+        const sortedLocations = Object.entries(locationMap).sort((a, b) => b[1] - a[1]);
+
+        if (sortedLocations.length === 0) {
+          locContainer.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No location hits logged yet.</p>`;
+        } else {
+          locContainer.innerHTML = sortedLocations.map(([loc, count]) => `
+            <span class="location-tag">📍 ${escapeHtml(loc)} (<strong>${count}</strong>)</span>
+          `).join('');
+        }
+      }
+    }
+
+    // --- FORUM HANDLERS ---
+    async function publishForumPost() {
+      const username = document.getElementById("forum-username").value.trim() || "Anonymous Predictor";
+      const game = document.getElementById("forum-game").value.trim() || "General Lotto";
+      const bankers = document.getElementById("forum-bankers").value.trim();
+      const comment = document.getElementById("forum-comment").value.trim();
+
+      if (!comment && !bankers) {
+        alert("Please enter a comment or banker numbers to post.");
+        return;
+      }
+
+      if (!dbInstance) {
+        alert("Database connection is offline. Verify your Firebase configuration.");
+        return;
+      }
+
+      try {
+        await dbInstance.collection("forum_posts").add({
+          author: username,
+          game: game,
+          bankers: bankers,
+          message: comment,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        document.getElementById("forum-comment").value = "";
+        document.getElementById("forum-bankers").value = "";
+        alert("✅ Post published to Community Forum!");
+      } catch (err) {
+        alert("❌ Error posting to forum: " + err.message);
+      }
+    }
+
+    function renderForumFeed() {
+      const container = document.getElementById("forum-posts-container");
+      if (!container) return;
+
+      if (cloudForumPosts.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted);">No forum posts yet. Be the first to share your banker!</p>`;
+        return;
+      }
+
+      container.innerHTML = cloudForumPosts.map(post => {
+        let timeStr = 'Just now';
+        if (post.createdAt && post.createdAt.seconds) {
+          timeStr = new Date(post.createdAt.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        return `
+          <div class="forum-post">
+            <span class="forum-time">${escapeHtml(timeStr)}</span>
+            <div class="forum-user">👤 ${escapeHtml(post.author || post.username || 'Lotto Fan')} <span style="color:var(--text-muted); font-size:0.8rem;">on ${escapeHtml(post.game || 'Lotto')}</span></div>
+            ${post.bankers ? `<div style="margin-top:4px;"><strong>Bankers:</strong> <span style="color:var(--accent-color); font-weight:bold;">${escapeHtml(post.bankers)}</span></div>` : ''}
+            <div class="forum-body">${escapeHtml(post.message || post.comment || '')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- TICKET CHECKER ---
+    function runTicketChecker() {
+      const channel = document.getElementById("check-channel").value;
+      const title = document.getElementById("check-title").value.trim();
+      const numbersInput = document.getElementById("check-numbers").value.trim();
+      const output = document.getElementById("checker-output");
+
+      if (!title || !numbersInput) {
+        output.innerHTML = `<div class="alert alert-danger">Please enter both Game Title and Your Numbers.</div>`;
+        return;
+      }
+
+      const match = cloudResultsDatabase.find(item => 
+        ((item.channel || '') === channel || (item.channel || '') === "ghana-nla") && 
+        (item.title || item.game || '').toLowerCase().includes(title.toLowerCase())
+      );
+
+      if (!match) {
+        output.innerHTML = `<div class="alert alert-danger">No draw records found for "${escapeHtml(title)}" in the database.</div>`;
+        return;
+      }
+
+      const userNums = numbersInput.split(/[-,\s]+/).filter(Boolean).map(n => n.trim().padStart(2, '0'));
+      const winningArr = (match.numbers || match.winning || '').split(/[-,\s]+/).filter(Boolean).map(n => n.trim().padStart(2, '0'));
+      const machineArr = (match.machine || '').split(/[-,\s]+/).filter(Boolean).map(n => n.trim().padStart(2, '0'));
+
+      const winHits = userNums.filter(n => winningArr.includes(n));
+      const macHits = userNums.filter(n => machineArr.includes(n));
+
+      let resultTier = "❌ No winning hits on this ticket.";
+      if (winHits.length === 2) resultTier = "🏆 WINNER: 2 SURE (NAP 2) HIT!";
+      if (winHits.length === 3) resultTier = "🔥 WINNER: 3 DIRECT HIT!";
+      if (winHits.length === 4) resultTier = "💥 WINNER: 4 DIRECT HIT!";
+      if (winHits.length === 5) resultTier = "🎉 JACKPOT WINNER (5 DIRECT)!";
+      if (winHits.length === 6) resultTier = "👑 SUPER 6 JACKPOT WINNER!";
+
+      output.innerHTML = `
+        <div class="alert alert-info">
+          <h4>Match Result: ${escapeHtml(match.title || match.game)} (${escapeHtml(match.day || '')} ${escapeHtml(match.month || '')} ${escapeHtml(match.year || '')})</h4>
+          <p style="margin-top:5px;"><strong>Status:</strong> ${resultTier}</p>
+          <p><strong>Winning Hits (${winHits.length}):</strong> ${winHits.join(', ') || 'None'}</p>
+          <p><strong>Machine Hits (${macHits.length}):</strong> ${macHits.join(', ') || 'None'}</p>
+        </div>
+      `;
+    }
+
+    // --- RESULTS FEED RENDER ---
+    function renderFeed() {
+      const filterSelect = document.getElementById("feed-filter");
+      const container = document.getElementById("results-feed");
+      if (!filterSelect || !container) return;
+
+      const filter = filterSelect.value;
+      const items = filter === "all" 
+        ? cloudResultsDatabase 
+        : cloudResultsDatabase.filter(i => (i.channel || '') === filter || (filter.startsWith("ghana-nla") && (i.channel || '') === "ghana-nla"));
+
+      if (items.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted);">No records found for this filter.</p>`;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const itemTitle = item.title || item.game || "Lotto Draw";
+        const config = getGameMatrixConfig(item.channel || itemTitle);
+        const winNums = (item.numbers || item.winning || '').split(/[-,\s]+/).filter(Boolean);
+        const macNums = (item.machine || '').split(/[-,\s]+/).filter(Boolean);
+
+        return `
+          <div class="card">
+            <div class="card-title">${escapeHtml(itemTitle)} <span class="stat-badge">${config.format}</span></div>
+            <div class="card-subtitle">${escapeHtml(item.day || '')} ${escapeHtml(item.month || '')} ${escapeHtml(item.year || '')}</div>
+            <div><strong>Winning Draw:</strong></div>
+            <div class="ball-container">
+              ${winNums.map(n => `<div class="ball">${escapeHtml(n.padStart(2, '0'))}</div>`).join('')}
+            </div>
+            <div style="margin-top:8px;"><strong>Machine Draw:</strong></div>
+            <div class="ball-container">
+              ${macNums.length ? macNums.map(n => `<div class="ball machine">${escapeHtml(n.padStart(2, '0'))}</div>`).join('') : 'N/A'}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- MARKOV AI ENGINE ---
+    function runMarkovEngine() {
+      const channel = document.getElementById("markov-channel").value;
+      const title = document.getElementById("markov-title").value.trim();
+      const output = document.getElementById("markov-output");
+
+      if (!title) {
+        output.innerHTML = `<div class="alert alert-danger">Please enter an exact Game Title.</div>`;
+        return;
+      }
+
+      const config = getGameMatrixConfig(channel || title);
+      const relevant = cloudResultsDatabase.filter(item => 
+        ((item.channel || '') === channel || (item.channel || '') === "ghana-nla") && 
+        (item.title || item.game || '').toLowerCase().includes(title.toLowerCase())
+      );
+
+      if (relevant.length < 2) {
+        output.innerHTML = `<div class="alert alert-danger">Insufficient records in database to calculate Markov probabilities for "${escapeHtml(title)}" (${config.format} Matrix). Upload past results via Admin Desk first.</div>`;
+        return;
+      }
+
+      const transitionMap = {};
+      for (let i = 1; i <= config.maxNum; i++) transitionMap[i] = {};
+
+      for (let d = 0; d < relevant.length - 1; d++) {
+        const curr = (relevant[d].numbers || relevant[d].winning || '').split(/[-,\s]+/).map(Number).filter(n => !isNaN(n) && n > 0);
+        const next = (relevant[d + 1].numbers || relevant[d + 1].winning || '').split(/[-,\s]+/).map(Number).filter(n => !isNaN(n) && n > 0);
+
+        curr.forEach(p => {
+          next.forEach(n => {
+            if (p <= config.maxNum && n <= config.maxNum) {
+              transitionMap[p][n] = (transitionMap[p][n] || 0) + 1;
+            }
+          });
+        });
+      }
+
+      const lastDraw = (relevant[0].numbers || relevant[0].winning || '').split(/[-,\s]+/).map(Number).filter(n => !isNaN(n) && n > 0);
+      const scoreBoard = {};
+
+      lastDraw.forEach(seed => {
+        const trans = transitionMap[seed] || {};
+        for (const [target, freq] of Object.entries(trans)) {
+          scoreBoard[target] = (scoreBoard[target] || 0) + freq;
+        }
+      });
+
+      const predicted = Object.keys(scoreBoard)
+        .map(Number)
+        .sort((a, b) => scoreBoard[b] - scoreBoard[a])
+        .slice(0, config.drawSize)
+        .sort((a, b) => a - b)
+        .map(n => String(n).padStart(2, '0'));
+
+      output.innerHTML = `
+        <div class="card">
+          <div class="card-title">🎯 Markov Matrix Projections (${config.format} Pool)</div>
+          <div class="card-subtitle">Game Target: ${escapeHtml(title)}</div>
+          <p style="margin-bottom:10px;">Calculated Banker Sequence:</p>
+          <div class="ball-container">
+            ${predicted.map(n => `<div class="ball">${n}</div>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // --- SECURE VIP AUTH SYSTEM (HIDDEN PASSCODES) ---
+    const VIP_TIERS = {
+      "1402": { label: "VIP Silver", perk: "2 Sure Direct Bankers" },
+      "3924": { label: "VIP Gold", perk: "3 Direct & Permutation Matrix" },
+      "0632": { label: "VIP Platinum", perk: "Full Markov AI & Counter-Keys" }
+    };
+
+    async function submitVipLogin() {
+      const code = document.getElementById("vip-passcode-input").value.trim();
+      if (VIP_TIERS[code]) {
+        localStorage.setItem("vip_session_token", code);
+        document.getElementById("vip-passcode-input").value = "";
+
+        if (dbInstance) {
+          try {
+            await dbInstance.collection("vip_logs").add({
+              tier: VIP_TIERS[code].label,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          } catch(e) {}
+        }
+
+        checkVipSession();
+      } else {
+        alert("❌ Access Denied: Invalid VIP Passcode.");
+      }
+    }
+
+    function checkVipSession() {
+      const token = localStorage.getItem("vip_session_token");
+      const loginSec = document.getElementById("vip-login-section");
+      const dashSec = document.getElementById("vip-dashboard-section");
+
+      if (token && VIP_TIERS[token]) {
+        if (loginSec) loginSec.style.display = "none";
+        if (dashSec) dashSec.style.display = "block";
+        const badge = document.getElementById("vip-welcome-badge");
+        if (badge) badge.innerText = `🔑 Active Access Level: ${VIP_TIERS[token].label} (${VIP_TIERS[token].perk})`;
+      } else {
+        if (loginSec) loginSec.style.display = "block";
+        if (dashSec) dashSec.style.display = "none";
+      }
+    }
+
+    function logoutVip() {
+      localStorage.removeItem("vip_session_token");
+      checkVipSession();
+    }
+
+    function runVipQuery() {
+      const channel = document.getElementById("vip-query-channel").value;
+      const title = document.getElementById("vip-query-title").value.trim();
+      const token = localStorage.getItem("vip_session_token");
+      const output = document.getElementById("vip-query-output");
+
+      if (!title) {
+        output.innerHTML = `<div class="alert alert-danger">Please enter a Game Title.</div>`;
+        return;
+      }
+
+      const config = getGameMatrixConfig(channel || title);
+      const filtered = cloudResultsDatabase.filter(item => 
+        ((item.channel || '') === channel || (item.channel || '') === "ghana-nla") && 
+        (item.title || item.game || '').toLowerCase().includes(title.toLowerCase())
+      );
+
+      output.innerHTML = `
+        <div class="card">
+          <div class="card-title">👑 VIP Matrix Forecast: ${escapeHtml(title)}</div>
+          <div class="card-subtitle">Tier: ${VIP_TIERS[token] ? VIP_TIERS[token].label : 'Standard VIP'} | Matrix Pool: ${config.format}</div>
+          <p><strong>Historical Draws Analyzed:</strong> ${filtered.length}</p>
+          <div style="margin-top:10px;" class="alert alert-info">
+            <strong>VIP Recommendation:</strong> High-probability pairs calculated specifically for ${config.format} rules.
+          </div>
+        </div>
+      `;
+    }
+
+    // --- STATISTICS SUITE ---
+    function renderStats() {
+      const channel = document.getElementById("stats-channel").value;
+      const container = document.getElementById("stats-output");
+      if (!container) return;
+
+      const items = cloudResultsDatabase.filter(i => (i.channel || '') === channel || (channel.startsWith("ghana-nla") && (i.channel || '') === "ghana-nla"));
+      if (items.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted); margin-top:15px;">No historical records uploaded for this matrix channel yet.</p>`;
+        return;
+      }
+
+      const freqMap = {};
+      let totalOdd = 0, totalEven = 0;
+
+      items.forEach(draw => {
+        const nums = (draw.numbers || draw.winning || '').split(/[-,\s]+/).map(Number).filter(n => !isNaN(n) && n > 0);
+        nums.forEach(n => {
+          freqMap[n] = (freqMap[n] || 0) + 1;
+          if (n % 2 === 0) totalEven++; else totalOdd++;
+        });
+      });
+
+      const sortedFreq = Object.entries(freqMap)
+        .map(([num, count]) => ({ num: String(num).padStart(2, '0'), count }))
+        .sort((a, b) => b.count - a.count);
+
+      const hot = sortedFreq.slice(0, 5);
+      const cold = sortedFreq.slice(-5).reverse();
+
+      container.innerHTML = `
+        <div class="grid-2" style="margin-top:15px;">
+          <div class="card">
+            <div class="card-title">🔥 Hot Numbers (Most Frequent)</div>
+            <div class="ball-container" style="margin-top:10px;">
+              ${hot.map(h => `<div class="ball">${h.num}</div>`).join('')}
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">❄️ Cold / Overdue Numbers</div>
+            <div class="ball-container" style="margin-top:10px;">
+              ${cold.map(c => `<div class="ball machine">${c.num}</div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">⚖️ Matrix Distribution Balance</div>
+          <p style="margin-top:5px;">Odd Numbers Drawn: <strong>${totalOdd}</strong> | Even Numbers Drawn: <strong>${totalEven}</strong></p>
+        </div>
+      `;
+    }
+
+    // --- ADMIN DESK (5945) ---
+    function verifyAdminPin() {
+      const pin = document.getElementById("admin-pin-input").value.trim();
+      if (pin === "5945") {
+        document.getElementById("admin-auth-box").style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+        renderAdminAnalytics();
+      } else {
+        alert("❌ Invalid Admin PIN.");
+      }
+    }
+
+    async function uploadBulkJson() {
+      const rawJson = document.getElementById("bulk-json-input").value.trim();
+      if (!dbInstance) {
+        alert("❌ Firebase Database is not connected.");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(rawJson);
+        if (!Array.isArray(parsed)) throw new Error("JSON must be an array of objects.");
+
+        // Chunking batch writes to respect Firestore's 500 operation limit
+        const chunkSize = 400;
+        for (let i = 0; i < parsed.length; i += chunkSize) {
+          const chunk = parsed.slice(i, i + chunkSize);
+          const batch = dbInstance.batch();
+
+          chunk.forEach(record => {
+            const docRef = dbInstance.collection("draw_results").doc();
+            batch.set(docRef, {
+              ...record,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          });
+
+          await batch.commit();
+        }
+
+        alert(`🚀 Success! Uploaded ${parsed.length} draw records to Live Database.`);
+        document.getElementById("bulk-json-input").value = "";
+      } catch (err) {
+        alert(`❌ Database Upload Error: ${err.message}`);
+      }
+    }
+  </script>
+</body>
+</html>
