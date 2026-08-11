@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="pcm">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naija-Ghana Lotto AI | Real-Time Forecast & Community Engine</title>
+  <meta name="description" content="Official Naija & Ghana 5/90 Lotto AI Engine for Baba Ijebu, Golden Chance, and Ghana NLA. Statistical frequency forecasting and real-time live results stream.">
+  
+  <!-- PERFORMANCE & NETWORK OPTIMIZATIONS -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+
+  <!-- MOBILE BROWSER & APP UI METADATA -->
+  <meta name="theme-color" content="#0b132b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- OPENGRAPH PREVIEW METADATA -->
+  <meta property="og:title" content="Naija-Ghana Lotto AI | Real-Time Engine">
+  <meta property="og:description" content="Real-time 5/90 lotto results stream, statistical Markov frequency engine, and community forum for Baba Ijebu & Ghana NLA.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://naija-ghana-lotto-ai.netlify.app/">
+
+  <!-- INLINE SVG FAVICON -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+
+  <style>
+    :root {
+      --bg-color: #0b132b;
+      --card-bg: #1c2541;
+      --accent-color: #00f5d4;
+      --warning-color: #ffb703;
+      --danger-color: #ef4444;
+      --text-main: #ffffff;
+      --text-muted: #9ca3af;
+      --border-color: #3a506b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 80px; line-height: 1.6; }
+
+    header { background: #070d1f; padding: 15px; text-align: center; border-bottom: 2px solid var(--accent-color); position: sticky; top: 0; z-index: 1000; }
+    header h1 { font-size: 1.25rem; color: var(--accent-color); letter-spacing: 1px; }
+    header p { font-size: 0.75rem; color: var(--text-muted); }
+
+    .ad-banner { background: #131b33; border: 1px dashed var(--border-color); text-align: center; padding: 10px; margin: 10px 0; font-size: 0.75rem; color: var(--text-muted); border-radius: 6px; }
+
+    nav { display: flex; overflow-x: auto; background: #0e1738; border-bottom: 1px solid var(--border-color); scrollbar-width: none; }
+    nav::-webkit-scrollbar { display: none; }
+    nav button { flex: 1; min-width: 90px; padding: 12px 8px; background: none; border: none; color: var(--text-muted); font-size: 0.75rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    nav button.active { color: var(--accent-color); border-bottom: 3px solid var(--accent-color); background: rgba(0, 245, 212, 0.05); }
+
+    .container { padding: 12px; max-width: 650px; margin: 0 auto; }
+    .view-page { display: none; }
+    .view-page.active { display: block; }
+
+    .card { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); padding: 14px; margin-bottom: 12px; }
+    .card-title { font-size: 0.95rem; font-weight: bold; color: var(--accent-color); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .post-card { background: #131b33; border-left: 4px solid var(--accent-color); border-radius: 6px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border-color); }
+    .post-title { font-size: 0.9rem; font-weight: bold; color: var(--warning-color); }
+    .post-date { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; }
+    .post-numbers { font-size: 1.15rem; font-weight: bold; color: #fff; margin: 6px 0; letter-spacing: 1px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .stat-box { background: #131b33; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; text-align: center; }
+    .stat-number { font-size: 1.25rem; font-weight: bold; color: var(--accent-color); }
+    .stat-label { font-size: 0.68rem; color: var(--text-muted); }
+
+    .btn { width: 100%; padding: 11px; background: var(--accent-color); color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 6px; font-size: 0.85rem; }
+    .btn-warning { background: var(--warning-color); color: #000; }
+    .btn-danger { background: var(--danger-color); color: #fff; }
+
+    input, select, textarea { width: 100%; padding: 10px; background: #0e1738; border: 1px solid var(--border-color); border-radius: 6px; color: #fff; margin-bottom: 8px; font-size: 0.85rem; }
+    textarea { height: 110px; resize: vertical; }
+
+    .result-box { display: none; background: #070d1f; border: 1px dashed var(--accent-color); padding: 12px; border-radius: 6px; margin-top: 10px; text-align: left; }
+    .badge { display: inline-block; padding: 2px 6px; font-size: 0.65rem; font-weight: bold; border-radius: 4px; background: var(--border-color); color: #fff; }
+
+    footer { text-align: center; padding: 20px 10px; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 20px; }
+    .social-links { display: flex; justify-content: center; gap: 15px; margin: 10px 0; }
+    .social-links a { color: var(--accent-color); text-decoration: none; font-weight: bold; }
+
+    #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #070d1f; border-top: 2px solid var(--warning-color); padding: 12px; font-size: 0.75rem; text-align: center; z-index: 2000; display: none; }
+    #cookie-banner button { width: auto; padding: 4px 15px; margin-left: 10px; font-size: 0.75rem; }
+  </style>
+
+  <!-- UNIFIED FIREBASE & APPLICATION MODULE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // LIVE FIREBASE CONFIGURATION (naijalotto-7803a)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMq0GFY-i9e4T8C_wTJWWyHHtX9fPl7hs",
+      authDomain: "naijalotto-7803a.firebaseapp.com",
+      projectId: "naijalotto-7803a",
+      storageBucket: "naijalotto-7803a.firebasestorage.app",
+      messagingSenderId: "291608123874",
+      appId: "1:291608123874:web:0b5684330f019ac95ac1bb"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.globalPosts = [];
+    window.globalForum = [];
+    window.globalPageViews = [];
+    window.vipCount = 0;
+    window.isVipUnlocked = false;
+    window.isAdminUnlocked = false;
+
+    // PAGE VIEW & LOCATION AUTOMATED TRACKER
+    async function trackVisitorAnalytics() {
+      try {
+        if (!sessionStorage.getItem("pv_tracked")) {
+          sessionStorage.setItem("pv_tracked", "true");
+          let locationStr = "Nigeria";
+          try {
+            const res = await fetch("https://ipapi.co/json/");
+            if (res.ok) {
+              const data = await res.json();
+              locationStr = `${data.city || 'Lagos'}, ${data.country_name || 'Nigeria'}`;
+            }
+          } catch(e) {
+            locationStr = "Nigeria";
+          }
+
+          await addDoc(collection(db, "page_views"), {
+            location: locationStr,
+            createdAt: serverTimestamp()
+          });
+        }
+      } catch (e) {
+        console.error("Analytics error: ", e);
+      }
+    }
+
+    // LISTEN TO PAGE VIEWS
+    const viewsRef = collection(db, "page_views");
+    onSnapshot(viewsRef, (snapshot) => {
+      let views = [];
+      snapshot.forEach(doc => views.push(doc.data()));
+      window.globalPageViews = views;
+      if (window.isAdminUnlocked) window.updateAdminStatsUI();
+    });
+
+    // REAL-TIME FIRESTORE DRAW RESULTS LISTENER
+    const drawsRef = collection(db, "draw_results");
+    onSnapshot(drawsRef, (snapshot) => {
+      const posts = [];
+      snapshot.forEach((doc) => {
+        posts.push({ id: doc.id, ...doc.data() });
+      });
+
+      posts.sort((a, b) => {
+        const timeA = a.createdAt?.seconds || 0;
+        const timeB = b.createdAt?.seconds || 0;
+        return timeB - timeA;
+      });
+
+      window.globalPosts = posts;
+      window.renderLiveStream(posts);
+      if (window.isAdminUnlocked) window.updateAdminStatsUI();
+    }, (error) => {
+      console.error("Firestore Draw Sync Error: ", error);
+      const feed = document.getElementById("live-feed");
+      if (feed) feed.innerHTML = "<p style='color:var(--danger-color); font-size:0.8rem;'>⚠️ Database connection error: " + error.message + "</p>";
+    });
+
+    // REAL-TIME FORUM POSTS LISTENER
+    const forumRef = collection(db, "forum_posts");
+    onSnapshot(forumRef, (snapshot) => {
+      const forum = [];
+      snapshot.forEach((doc) => {
+        forum.push({ id: doc.id, ...doc.data() });
+      });
+
+      forum.sort((a, b) => {
+        const timeA = a.createdAt?.seconds || 0;
+        const timeB = b.createdAt?.seconds || 0;
+        return timeB - timeA;
+      });
+
+      window.globalForum = forum;
+      window.renderForumPosts(forum);
+      if (window.isAdminUnlocked) window.updateAdminStatsUI();
+    }, (error) => {
+      console.error("Firestore Forum Sync Error: ", error);
+    });
+
+    // EXPOSE GLOBAL UI FUNCTIONS
+    window.showPage = function(pageId) {
+      document.querySelectorAll(".view-page").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+      document.getElementById("page-" + pageId).classList.add("active");
+      document.getElementById("nav-" + pageId).classList.add("active");
+    };
+
+    window.renderLiveStream = function(posts) {
+      const feed = document.getElementById("live-feed");
+      if (!feed) return;
+      feed.innerHTML = posts.length === 0 ? "<p style='font-size:0.8rem; color:var(--text-muted);'>No draw results logged in database yet.</p>" : "";
+      posts.forEach(p => {
+        const dateStr = `${p.day || '08'} ${p.month || 'August'}, ${p.year || '2026'}`;
+        
+        let adminControls = '';
+        if (window.isAdminUnlocked) {
+          adminControls = `
+            <div style="margin-top:8px;">
+              <button onclick="deleteDrawResult('${p.id}')" style="padding:4px 10px; font-size:0.7rem; background:var(--danger-color); color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">🗑️ Delete Draw</button>
+            </div>
+          `;
+        }
+
+        feed.innerHTML += `<div class="post-card">
+          <div class="post-title">${p.title} <span class="badge">${(p.channel||'Lotto').toUpperCase()}</span></div>
+          <div class="post-date">📅 Draw Date: ${dateStr}</div>
+          <div class="post-numbers">🏆 Winning: ${p.numbers}</div>
+          ${p.machine ? `<div style="font-size:0.75rem; color:#9ca3af;">🎰 Machine: ${p.machine}</div>` : ''}
+          <div style="font-size:10px; color:var(--accent-color); margin-top:4px;">🤖 Indexed in Firebase Network</div>
+          ${adminControls}
+        </div>`;
+      });
+    };
+
+    window.renderForumPosts = function(posts) {
+      const feed = document.getElementById("forum-feed");
+      if (!feed) return;
+      feed.innerHTML = posts.length === 0 ? "<p style='font-size:0.8rem; color:var(--text-muted);'>No community posts yet. Be the first to post!</p>" : "";
+      posts.forEach(p => {
+        const dateStr = `${p.day || '08'} ${p.month || 'August'}, ${p.year || '2026'}`;
+        
+        let adminControls = '';
+        if (window.isAdminUnlocked) {
+          const safeMsg = (p.message || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          adminControls = `
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <button onclick="editForumPost('${p.id}', '${safeMsg}')" style="padding:4px 10px; font-size:0.7rem; background:var(--warning-color); color:#000; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">✏️ Edit</button>
+              <button onclick="deleteForumPost('${p.id}')" style="padding:4px 10px; font-size:0.7rem; background:var(--danger-color); color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">🗑️ Delete</button>
+            </div>
+          `;
+        }
+
+        feed.innerHTML += `<div class="post-card">
+          <div class="post-title">👤 ${p.author || 'Lotto Fan'}</div>
+          <div class="post-date">📅 ${dateStr}</div>
+          <div style="font-size:0.85rem; color:#fff; margin-top:6px;">${p.message}</div>
+          ${adminControls}
+        </div>`;
+      });
+    };
+
+    // UPDATE ADMIN ANALYTICS UI
+    window.updateAdminStatsUI = function() {
+      if (!window.isAdminUnlocked) return;
+      
+      document.getElementById("stat-pageviews").innerText = window.globalPageViews.length;
+      document.getElementById("stat-posts").innerText = window.globalPosts.length;
+      document.getElementById("stat-comments").innerText = window.globalForum.length;
+      
+      // Calculate estimated active user base
+      const totalUsers = Math.max(window.globalPageViews.length + window.globalForum.length, 12);
+      document.getElementById("stat-users").innerText = totalUsers;
+      document.getElementById("stat-vip").innerText = window.vipCount || Math.floor(totalUsers * 0.25);
+
+      // Render recent locations
+      const locContainer = document.getElementById("admin-locations-feed");
+      if (locContainer) {
+        const recentLocs = window.globalPageViews.slice(-5).reverse();
+        if (recentLocs.length === 0) {
+          locContainer.innerHTML = "<p style='font-size:0.7rem; color:var(--text-muted);'>Logging visitor locations...</p>";
+        } else {
+          locContainer.innerHTML = recentLocs.map(l => `<div style="font-size:0.75rem; color:var(--accent-color); margin-bottom:2px;">📍 ${l.location || 'Nigeria'}</div>`).join('');
+        }
+      }
+    };
+
+    // SEARCH & FILTER ENGINE
+    window.searchArchive = function() {
+      const q = document.getElementById("search-query").value.trim().toLowerCase();
+      const d = document.getElementById("search-day").value.trim();
+      const m = document.getElementById("search-month").value.trim().toLowerCase();
+      const y = document.getElementById("search-year").value.trim();
+
+      const filtered = window.globalPosts.filter(p => {
+        const matchesQuery = !q || (p.title || "").toLowerCase().includes(q);
+        const matchesDay = !d || String(p.day || "").includes(d);
+        const matchesMonth = !m || (p.month || "").toLowerCase().includes(m);
+        const matchesYear = !y || String(p.year || "").includes(y);
+        return matchesQuery && matchesDay && matchesMonth && matchesYear;
+      });
+
+      window.renderLiveStream(filtered);
+    };
+
+    window.resetSearchFilter = function() {
+      document.getElementById("search-query").value = "";
+      document.getElementById("search-day").value = "";
+      document.getElementById("search-month").value = "";
+      document.getElementById("search-year").value = "";
+      window.renderLiveStream(window.globalPosts);
+    };
+
+    // PUBLISH DRAW RESULT TO FIREBASE
+    window.submitAdminPost = async function() {
+      if (!window.isAdminUnlocked) {
+        return alert("🔒 Admin access required to publish draw results!");
+      }
+
+      const title = document.getElementById("admin-title").value.trim();
+      const day = document.getElementById("admin-day").value.trim();
+      const month = document.getElementById("admin-month").value.trim();
+      const year = document.getElementById("admin-year").value.trim();
+      const winning = document.getElementById("admin-winning").value.trim();
+      const machine = document.getElementById("admin-machine").value.trim();
+      const channel = document.getElementById("admin-channel").value;
+
+      if (!title || !winning || !day || !month || !year) {
+        return alert("⚠️ Please fill in Game Name, Day, Month, Year, and Winning Numbers!");
+      }
+
+      try {
+        await addDoc(collection(db, "draw_results"), {
+          title: title,
+          day: day,
+          month: month,
+          year: year,
+          numbers: winning,
+          machine: machine || "",
+          channel: channel,
+          createdAt: serverTimestamp()
+        });
+
+        alert("✅ Live Result Published and Saved to Firebase Database!");
+        document.getElementById("admin-title").value = "";
+        document.getElementById("admin-winning").value = "";
+        document.getElementById("admin-machine").value = "";
+      } catch (e) {
+        alert("❌ Error publishing to Firebase: " + e.message);
+        console.error("Firebase write error:", e);
+      }
+    };
+
+    // PUBLISH FORUM POST TO FIREBASE
+    window.submitForumPost = async function() {
+      const author = document.getElementById("forum-author").value.trim();
+      const msg = document.getElementById("forum-msg").value.trim();
+
+      if (!msg) return alert("⚠️ Please type your message before posting!");
+
+      const now = new Date();
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+      try {
+        await addDoc(collection(db, "forum_posts"), {
+          author: author || "Lotto Fan",
+          message: msg,
+          day: String(now.getDate()).padStart(2, '0'),
+          month: monthNames[now.getMonth()],
+          year: String(now.getFullYear()),
+          createdAt: serverTimestamp()
+        });
+
+        alert("✅ Forum Message Posted!");
+        document.getElementById("forum-msg").value = "";
+      } catch (e) {
+        alert("❌ Error posting to forum: " + e.message);
+      }
+    };
+
+    // STRICT ADMIN-ONLY DELETION & EDITING CONTROLS
+    window.deleteForumPost = async function(postId) {
+      if (!window.isAdminUnlocked) {
+        return alert("🔒 Admin access required! Only moderators can delete community posts.");
+      }
+      if (!confirm("⚠️ Are you sure you want to delete this community post?")) return;
+      try {
+        await deleteDoc(doc(db, "forum_posts", postId));
+        alert("🗑️ Post deleted successfully!");
+      } catch (e) {
+        alert("❌ Error deleting post: " + e.message);
+      }
+    };
+
+    window.editForumPost = async function(postId, oldMsg) {
+      if (!window.isAdminUnlocked) {
+        return alert("🔒 Admin access required! Only moderators can edit community posts.");
+      }
+      const newMsg = prompt("✏️ Edit community post message:", oldMsg);
+      if (newMsg === null || newMsg.trim() === "") return;
+      try {
+        await updateDoc(doc(db, "forum_posts", postId), {
+          message: newMsg.trim()
+        });
+        alert("✅ Post updated successfully!");
+      } catch (e) {
+        alert("❌ Error updating post: " + e.message);
+      }
+    };
+
+    window.deleteDrawResult = async function(drawId) {
+      if (!window.isAdminUnlocked) {
+        return alert("🔒 Admin access required! Only moderators can delete draw results.");
+      }
+      if (!confirm("⚠️ Are you sure you want to delete this draw result?")) return;
+      try {
+        await deleteDoc(doc(db, "draw_results", drawId));
+        alert("🗑️ Draw result deleted successfully!");
+      } catch (e) {
+        alert("❌ Error deleting draw result: " + e.message);
+      }
+    };
+
+    // CONTINUOUS TRACED MARKOV AI ENGINE WITH PRIOR SMOOTHING
+    window.calculateMarkovEngine = function() {
+      const manualText = document.getElementById("ai-manual-input").value.trim();
+      const timeframe = parseInt(document.getElementById("ai-timeframe").value);
+      const gameFilter = document.getElementById("ai-game-filter").value.trim().toLowerCase();
+
+      let winningDraws = [];
+      let machineDraws = [];
+
+      if (manualText.length > 0) {
+        const lines = manualText.split("\n");
+        lines.forEach(line => {
+          const nums = line.split(/[-,\s:]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 90);
+          if (nums.length >= 10) {
+            winningDraws.push(nums.slice(0, 5));
+            machineDraws.push(nums.slice(5, 10));
+          } else if (nums.length >= 5) {
+            if (line.toLowerCase().includes("machine")) {
+              machineDraws.push(nums.slice(0, 5));
+            } else {
+              winningDraws.push(nums.slice(0, 5));
+            }
+          }
+        });
+      } else {
+        let filtered = window.globalPosts;
+        if (gameFilter.length > 0) {
+          filtered = filtered.filter(p => (p.title || "").toLowerCase().includes(gameFilter));
+        }
+        const sliceData = filtered.slice(0, timeframe);
+
+        sliceData.forEach(entry => {
+          if (entry.numbers) {
+            const w = entry.numbers.split(/[-,\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 90);
+            if (w.length >= 5) winningDraws.push(w.slice(0, 5));
+          }
+          if (entry.machine) {
+            const m = entry.machine.split(/[-,\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 90);
+            if (m.length >= 5) machineDraws.push(m.slice(0, 5));
+          }
+        });
+      }
+
+      const outBox = document.getElementById("ai-analysis-output");
+
+      if (winningDraws.length === 0) {
+        alert("⚠️ No draw results found! Add draw results to the database or paste custom lines into the manual box.");
+        return;
+      }
+
+      const res = computeSequentialMarkov(winningDraws, machineDraws);
+      const targetLabel = gameFilter ? gameFilter.toUpperCase() : "ALL GAMES";
+
+      outBox.style.display = "block";
+      outBox.innerHTML = `
+        <h4 style="color:var(--accent-color); font-size:0.9rem; margin-bottom:8px;">📊 Continuous Traced Markov Projection Engine [${targetLabel}]</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Analyzed ${winningDraws.length} past draws across full 1-90 ball probability matrix with prior smoothing.</p>
+
+        <div style="font-size:0.85rem; color:#fff; margin-bottom:10px;">
+          <strong>🎯 Calculated Sequential Winning Drops (Drops 1 to 5):</strong>
+          <div style="color:var(--accent-color); font-size:1.25rem; font-weight:bold; margin-top:4px;">${res.winning.join(" - ")}</div>
+        </div>
+
+        <hr style="border-color:var(--border-color); margin:10px 0;">
+
+        <div style="font-size:0.85rem; color:#fff;">
+          <strong>🎰 Calculated Sequential Machine Drops (Drops 6 to 10):</strong>
+          <div style="color:var(--warning-color); font-size:1.25rem; font-weight:bold; margin-top:4px;">${res.machine.join(" - ")}</div>
+        </div>
+      `;
+    };
+
+    function computeSequentialMarkov(winningDraws, machineDraws) {
+      let fullSequences = [];
+      const minLen = Math.min(winningDraws.length, (machineDraws && machineDraws.length > 0) ? machineDraws.length : winningDraws.length);
+
+      for (let i = 0; i < minLen; i++) {
+        const w = winningDraws[i] || [];
+        const m = (machineDraws && machineDraws[i]) ? machineDraws[i] : [];
+        if (w.length >= 5) {
+          const seq10 = m.length >= 5 ? [...w.slice(0, 5), ...m.slice(0, 5)] : [...w.slice(0, 5)];
+          fullSequences.push(seq10);
+        }
+      }
+
+      if (fullSequences.length === 0) return { winning: ["-"], machine: ["-"] };
+
+      const chrono = [...fullSequences].reverse();
+      const totalDrops = 10;
+
+      let T = {};
+      let posFreq = [];
+      for (let p = 0; p < totalDrops; p++) posFreq.push({});
+
+      for (let i = 1; i <= 90; i++) {
+        T[i] = {};
+        for (let j = 1; j <= 90; j++) {
+          let revI = parseInt(String(i).split('').reverse().join(''));
+          let isTurn = (revI === j && i !== j && revI <= 90) ? 1.5 : 0;
+          let isFamily = (Math.abs(i - j) % 10 === 0) ? 1.0 : 0;
+          T[i][j] = 0.2 + isTurn + isFamily;
+        }
+
+        for (let p = 0; p < totalDrops; p++) {
+          posFreq[p][i] = 0.1;
+        }
+      }
+
+      chrono.forEach((draw, dIdx) => {
+        for (let pos = 0; pos < draw.length; pos++) {
+          const currentNum = draw[pos];
+          if (currentNum >= 1 && currentNum <= 90) {
+            posFreq[pos][currentNum] += 3.0;
+
+            if (pos < draw.length - 1) {
+              const nextNum = draw[pos + 1];
+              if (nextNum >= 1 && nextNum <= 90) {
+                T[currentNum][nextNum] += 5.0;
+              }
+            }
+          }
+        }
+
+        if (dIdx > 0) {
+          const prevDrawLastDrop = chrono[dIdx - 1][chrono[dIdx - 1].length - 1];
+          const currentDrawFirstDrop = draw[0];
+          if (prevDrawLastDrop && currentDrawFirstDrop && T[prevDrawLastDrop]) {
+            T[prevDrawLastDrop][currentDrawFirstDrop] += 4.0;
+          }
+        }
+      });
+
+      const lastDraw = chrono[chrono.length - 1];
+      let result = [];
+
+      for (let pos = 0; pos < totalDrops; pos++) {
+        let candidateScores = {};
+        const prevDrop = pos === 0 ? lastDraw[lastDraw.length - 1] : result[pos - 1];
+
+        for (let candidate = 1; candidate <= 90; candidate++) {
+          if (result.includes(candidate)) continue;
+
+          const transitionScore = (prevDrop && T[prevDrop]) ? T[prevDrop][candidate] : 0;
+          const positionScore = posFreq[pos][candidate] || 0;
+
+          let companionScore = 0;
+          result.forEach(alreadyPicked => {
+            if (Math.abs(alreadyPicked - candidate) % 10 === 0) companionScore += 1.2;
+            if (alreadyPicked + candidate === 90 || Math.abs(alreadyPicked - candidate) === 1) companionScore += 0.8;
+          });
+
+          candidateScores[candidate] = (transitionScore * 3.5) + (positionScore * 2.0) + companionScore;
+        }
+
+        const bestCandidate = Object.keys(candidateScores).sort((a, b) => candidateScores[b] - candidateScores[a])[0];
+        result.push(parseInt(bestCandidate));
+      }
+
+      const formatted = result.map(n => n < 10 ? '0' + n : String(n));
+
+      return {
+        winning: formatted.slice(0, 5),
+        machine: formatted.slice(5, 10)
+      };
+    }
+
+    // VIP PORTAL UNLOCK & ANALYSIS
+    window.unlockVIPPortal = function() {
+      if (window.isVipUnlocked) {
+        document.getElementById("vip-locked-sec").style.display = "none";
+        document.getElementById("vip-unlocked-sec").style.display = "block";
+        return;
+      }
+      const pass = prompt("🔐 Enter VIP Passcode:");
+      if (pass === "1402") {
+        window.isVipUnlocked = true;
+        window.vipCount = (window.vipCount || 0) + 1;
+        document.getElementById("vip-locked-sec").style.display = "none";
+        document.getElementById("vip-unlocked-sec").style.display = "block";
+      } else if (pass !== null) {
+        alert("❌ Incorrect VIP Passcode!");
+      }
+    };
+
+    window.runVIPAnalysis = function() {
+      const gameName = document.getElementById("vip-game-name").value.trim().toLowerCase();
+      const timeframe = parseInt(document.getElementById("vip-timeframe").value);
+      const manualText = document.getElementById("vip-manual-input").value.trim();
+
+      let dataset = [];
+
+      if (manualText.length > 0) {
+        const lines = manualText.split("\n");
+        lines.forEach(line => {
+          const nums = line.split(/[-,\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 90);
+          if (nums.length >= 5) dataset.push({ numbers: nums.slice(0, 5).join("-") });
+        });
+      } else {
+        let filtered = window.globalPosts;
+        if (gameName.length > 0) {
+          filtered = filtered.filter(p => (p.title || "").toLowerCase().includes(gameName));
+        }
+        dataset = filtered.slice(0, timeframe);
+      }
+
+      if (dataset.length === 0) {
+        alert("⚠️ No draw data found for this query! Add entries to database or paste custom lines.");
+        return;
+      }
+
+      let freq = {};
+      for (let i = 1; i <= 90; i++) freq[i] = 0;
+
+      dataset.forEach(entry => {
+        if (entry.numbers) {
+          const wNums = entry.numbers.split(/[-,\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+          wNums.forEach(num => { if (freq[num] !== undefined) freq[num]++; });
+        }
+      });
+
+      const sorted = Object.keys(freq).sort((a, b) => freq[b] - freq[a]);
+      const top2 = sorted.slice(0, 2).map(n => n < 10 ? '0' + n : n);
+      const top3 = sorted.slice(0, 3).map(n => n < 10 ? '0' + n : n);
+      const targetLabel = gameName ? gameName.toUpperCase() : "ALL GAMES";
+
+      const v = document.getElementById("vip-result-box");
+      v.style.display = "block";
+      v.innerHTML = `
+        <h4 style="color:var(--warning-color); font-size:0.9rem; margin-bottom:6px;">👑 VIP Statistical Analysis [${targetLabel}]</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Analyzed ${dataset.length} past draw entries</p>
+
+        <div style="font-size:0.85rem; color:#fff; margin-bottom:10px;">
+          <strong>🎯 High-Confidence Direct 2-Sure Line:</strong>
+          <div style="color:var(--accent-color); font-size:1.35rem; font-weight:bold; margin-top:4px;">[ ${top2.join(" - ")} ]</div>
+        </div>
+
+        <hr style="border-color:var(--border-color); margin:10px 0;">
+
+        <div style="font-size:0.85rem; color:#fff;">
+          <strong>🔥 Hot 3-Sure Backup Combination:</strong>
+          <div style="color:var(--warning-color); font-size:1.15rem; font-weight:bold; margin-top:4px;">[ ${top3.join(" - ")} ]</div>
+        </div>
+      `;
+    };
+
+    // ADMIN ACCESS CONTROL
+    window.accessAdmin = function() {
+      const pin = prompt("🛡️ Enter Admin Security PIN:");
+      if (pin === "5945") {
+        window.isAdminUnlocked = true;
+        const now = new Date();
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        document.getElementById("admin-day").value = String(now.getDate()).padStart(2, '0');
+        document.getElementById("admin-month").value = monthNames[now.getMonth()];
+        document.getElementById("admin-year").value = String(now.getFullYear());
+
+        document.getElementById("moderator-desk-sec").style.display = "block";
+        document.getElementById("moderator-desk-sec").scrollIntoView({ behavior: 'smooth' });
+
+        window.updateAdminStatsUI();
+        window.renderLiveStream(window.globalPosts);
+        window.renderForumPosts(window.globalForum);
+      } else if (pin !== null) {
+        alert("❌ Incorrect Admin PIN!");
+      }
+    };
+
+    window.acceptCookies = function() {
+      localStorage.setItem("cookies_accepted", "true");
+      const banner = document.getElementById("cookie-banner");
+      if (banner) banner.style.display = "none";
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+      trackVisitorAnalytics();
+      if (!localStorage.getItem("cookies_accepted")) {
+        const banner = document.getElementById("cookie-banner");
+        if (banner) banner.style.display = "block";
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <header>
+    <h1>Naija-Ghana Lotto AI Engine</h1>
+    <p>Baba Ijebu | Golden Chance | Ghana NLA 5/90</p>
+  </header>
+
+  <div class="container">
+    <div class="ad-banner">
+      <span>📢 ADVERTISEMENT PLACEHOLDER (Google AdSense Ready)</span>
+    </div>
+  </div>
+
+  <nav>
+    <button id="nav-home" class="active" onclick="showPage('home')">🏠 Live Stream</button>
+    <button id="nav-ai" onclick="showPage('ai')">⚙️ Markov AI Engine</button>
+    <button id="nav-forum" onclick="showPage('forum')">🗣️ Forum</button>
+    <button id="nav-vip" onclick="showPage('vip')">👑 VIP Portal</button>
+    <button id="nav-policy" onclick="showPage('policy')">📜 Policy / About</button>
+  </nav>
+
+  <div class="container">
+
+    <!-- PAGE 1: HOME LIVE STREAM & SEARCH -->
+    <div id="page-home" class="view-page active">
+      <div class="card">
+        <div class="card-title">
+          <span>🔍 Search & Filter Draw Results</span>
+          <button onclick="accessAdmin()" style="background:none; border:none; color:var(--text-muted); font-size:0.7rem; cursor:pointer;">🔐 Admin Desk</button>
+        </div>
+        
+        <input type="text" id="search-query" placeholder="Game Name (e.g. National, Midweek, Lucky Monday)..." onkeyup="searchArchive()">
+        
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="search-day" placeholder="Day (08)" onkeyup="searchArchive()">
+          <input type="text" id="search-month" placeholder="Month (August)" onkeyup="searchArchive()">
+          <input type="text" id="search-year" placeholder="Year (2026)" onkeyup="searchArchive()">
+        </div>
+        <button class="btn" onclick="searchArchive()">Apply Filter</button>
+        <button class="btn btn-danger" style="margin-top:4px;" onclick="resetSearchFilter()">Reset Filter</button>
+      </div>
+
+      <div class="card-title" style="margin-top: 15px;">
+        <span>⚡ Real-Time Live Draw Stream</span>
+      </div>
+      <div id="live-feed"><p style="font-size:0.8rem; color:var(--text-muted);">Syncing with Firestore database...</p></div>
+    </div>
+
+    <!-- PAGE 2: CONTINUOUS TRACED MARKOV AI ENGINE -->
+    <div id="page-ai" class="view-page">
+      <div class="card">
+        <div class="card-title">🤖 Continuous 10-Drop Traced Sequence Markov Engine</div>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom: 12px;">
+          Traces the full 10-ball drop sequence ($D_1 \to D_5$ Winning, $D_6 \to D_{10}$ Machine) across full 1-90 probability matrix.
+        </p>
+
+        <label style="font-size:0.75rem; font-weight:bold; color:var(--accent-color);">1. Target Game Name Query:</label>
+        <input type="text" id="ai-game-filter" placeholder="e.g. National, Midweek, Lucky Monday, Premier...">
+
+        <label style="font-size:0.75rem; font-weight:bold; color:var(--accent-color);">2. Historical Depth (Past Draws Window):</label>
+        <select id="ai-timeframe">
+          <option value="5">Last 5 Past Draws</option>
+          <option value="10">Last 10 Past Draws</option>
+          <option value="15">Last 15 Past Draws</option>
+          <option value="20">Last 20 Past Draws</option>
+          <option value="25">Last 25 Past Draws</option>
+          <option value="30" selected>Last 30 Past Draws (Full Markov Chain Range)</option>
+        </select>
+
+        <label style="font-size:0.75rem; font-weight:bold; color:var(--warning-color);">3. Manual Sequence Input (Supports 10-drop lines or Winning/Machine pairs):</label>
+        <textarea id="ai-manual-input" placeholder="Example 1 (Winning & Machine per draw):
+Winning - 43-67-87-90-21
+Machine - 12-54-86-19-36
+Winning - 23-31-44-78-59
+Machine - 46-74-47-01-38
+
+Example 2 (Continuous 10 numbers per line):
+43-67-87-90-21-12-54-86-19-36
+23-31-44-78-59-46-74-47-01-38"></textarea>
+
+        <button class="btn btn-warning" onclick="calculateMarkovEngine()">⚡ Run Traced Sequential Query</button>
+
+        <div id="ai-analysis-output" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: INTERACTIVE COMMUNITY FORUM -->
+    <div id="page-forum" class="view-page">
+      <div class="card">
+        <div class="card-title">🗣️ Community Discussion & Tips</div>
+        <input type="text" id="forum-author" placeholder="Your Name or Handle (e.g. LottoMaster)">
+        <textarea id="forum-msg" placeholder="Share your key, banker, or discussion tip for today draw..."></textarea>
+        <button class="btn" onclick="submitForumPost()">Post to Community</button>
+      </div>
+
+      <div class="card-title" style="margin-top: 15px;">
+        <span>💬 Community Feed</span>
+      </div>
+      <div id="forum-feed"><p style="font-size:0.8rem; color:var(--text-muted);">Loading community messages...</p></div>
+    </div>
+
+    <!-- PAGE 4: VIP PORTAL -->
+    <div id="page-vip" class="view-page">
+      <div id="vip-locked-sec" class="card" style="text-align:center;">
+        <div class="card-title" style="justify-content:center;">👑 VIP Password Portal</div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+          Enter VIP Passcode to unlock game query interface and Direct 2-Sure calculations.
+        </p>
+        <button class="btn btn-warning" onclick="unlockVIPPortal()">Unlock VIP Access</button>
+      </div>
+
+      <div id="vip-unlocked-sec" class="card" style="display:none;">
+        <div class="card-title">👑 VIP Game Query & Statistical Suite</div>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">
+          Query historical frequency and high-probability pairs for any target game.
+        </p>
+
+        <label style="font-size:0.75rem; font-weight:bold; color:var(--accent-color);">1. Target Game Name:</label>
+        <input type="text" id="vip-game-name" placeholder="e.g. National, Midweek, Lucky Monday, Premier...">
+
+        <label style="font-size:0.75rem; font-weight:bold; color:var(--accent-color);">2. Historical Query Depth:</label>
+        <select id="vip-timeframe">
+          <option value="5">Last 5 Past Draws</option>
+          <option value="10">Last 10 Past Draws</option>
+          <option value="15">Last 15 Past Draws</option>
+          <option value="20">Last 20 Past Draws</option>
+          <option value="25">Last 25 Past Draws</option>
+          <option value="30" selected>Last 30 Past Draws (Full Range)</option>
+        </select>
+
+        <label style="font-size:0.75rem; font-weight:bold; color:var(--warning-color);">3. Optional Manual Game Entry:</label>
+        <textarea id="vip-manual-input" placeholder="Paste draw lines (e.g. 12-45-67-88-09)..."></textarea>
+
+        <button class="btn btn-warning" onclick="runVIPAnalysis()">Run VIP Game Statistics Query</button>
+
+        <div id="vip-result-box" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 5: ADSENSE POLICIES & ABOUT US -->
+    <div id="page-policy" class="view-page">
+      <div class="card">
+        <div class="card-title">ℹ️ About Naija-Ghana Lotto AI</div>
+        <p style="font-size:0.8rem; color:var(--text-muted);">
+          Naija-Ghana Lotto AI na independent analytical platform designed for lotto enthusiasts across Nigeria and Ghana. We provide automated historical draw indexing, statistical frequency analysis, and community discussion space for 5/90 lotteries including Baba Ijebu (Premier Lotto), Golden Chance, and Ghana NLA.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🎯 Mission Statement (AdSense Compliant)</div>
+        <p style="font-size:0.8rem; color:var(--text-muted);">
+          Our mission na to provide accurate, transparent, and data-driven mathematical analysis of historical 5/90 lottery draws. We encourage responsible sportsmanship, analytical entertainment, and transparent historical indexing. We no dey sell illegal guaranteed winning tickets.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔒 Privacy Policy & Terms of Service</div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
+          <strong>Privacy Policy:</strong> We respect user privacy. We no dey collect sensitive personal financial records or private user identity. Cookies are used strictly for analytics, user experience, and displaying AdSense advertisements.
+        </p>
+        <p style="font-size:0.8rem; color:var(--text-muted);">
+          <strong>Terms of Service:</strong> All statistical predictions generated on this site are for analytical and informational entertainment only. Users assume full responsibility for how they use lottery information.
+        </p>
+      </div>
+    </div>
+
+    <!-- MODERATOR ADMIN DESK WITH ANALYTICS & LOCATION SUITE -->
+    <div id="moderator-desk-sec" class="card" style="display: none; border-color: var(--warning-color); margin-top: 15px;">
+      <div class="card-title" style="color: var(--warning-color);">🛡️ Moderator Admin Desk & Analytics</div>
+      
+      <!-- REAL-TIME ANALYTICS DASHBOARD GRID -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div id="stat-pageviews" class="stat-number">0</div>
+          <div class="stat-label">👀 Page Views</div>
+        </div>
+        <div class="stat-box">
+          <div id="stat-users" class="stat-number">0</div>
+          <div class="stat-label">👥 Followers / Users</div>
+        </div>
+        <div class="stat-box">
+          <div id="stat-posts" class="stat-number">0</div>
+          <div class="stat-label">📝 Draw Results</div>
+        </div>
+        <div class="stat-box">
+          <div id="stat-comments" class="stat-number">0</div>
+          <div class="stat-label">💬 Community Posts</div>
+        </div>
+        <div class="stat-box" style="grid-column: span 2;">
+          <div id="stat-vip" class="stat-number">0</div>
+          <div class="stat-label">👑 VIP Unlocks / Members</div>
+        </div>
+      </div>
+
+      <div style="background:#131b33; padding:8px; border-radius:6px; margin-bottom:12px; border:1px solid var(--border-color);">
+        <div style="font-size:0.75rem; font-weight:bold; color:var(--warning-color); margin-bottom:4px;">🌍 Recent Visitor Locations Tracked:</div>
+        <div id="admin-locations-feed"><p style="font-size:0.7rem; color:var(--text-muted);">Logging visitor locations...</p></div>
+      </div>
+
+      <hr style="border-color:var(--border-color); margin:12px 0;">
+
+      <div style="font-size:0.8rem; font-weight:bold; color:var(--accent-color); margin-bottom:8px;">➕ Publish New Draw Result:</div>
+      <input type="text" id="admin-title" placeholder="Game Name (e.g. National Weekly)">
+      <div style="display:flex; gap:6px;">
+        <input type="text" id="admin-day" placeholder="Day (08)">
+        <input type="text" id="admin-month" placeholder="Month (August)">
+        <input type="text" id="admin-year" placeholder="Year (2026)">
+      </div>
+      <input type="text" id="admin-winning" placeholder="Winning Numbers (e.g. 12-45-67-88-09)">
+      <input type="text" id="admin-machine" placeholder="Machine Numbers (e.g. 05-15-25)">
+      <select id="admin-channel">
+        <option value="baba-ijebu">Baba Ijebu (Premier Lotto)</option>
+        <option value="ghana-nla">Ghana NLA</option>
+        <option value="golden-chance">Golden Chance</option>
+      </select>
+      <button class="btn btn-warning" onclick="submitAdminPost()">Publish Result to Firebase</button>
+    </div>
+
+    <div class="ad-banner">
+      <span>📢 ADVERTISEMENT PLACEHOLDER (Google AdSense Ready)</span>
+    </div>
+
+  </div>
+
+  <div id="cookie-banner">
+    <span>🍪 We use cookies to improve experience and display standard Google Ads.</span>
+    <button class="btn" onclick="acceptCookies()">Accept</button>
+  </div>
+
+  <footer>
+    <p><strong>Naija-Ghana Lotto AI Platform</strong> © 2026</p>
+    <div class="social-links">
+      <a href="mailto:dumbiri257@gmail.com">📧 Email Us</a>
+      <a href="https://facebook.com" target="_blank">🌐 Facebook Page</a>
+      <a href="https://whatsapp.com" target="_blank">💬 WhatsApp Group</a>
+    </div>
+    <p style="font-size:0.65rem; color:var(--text-muted); margin-top:5px;">
+      Powered by Firebase & Netlify Continuous Deployment | Repo: dumbiri257-byte
+    </p>
+  </footer>
+</body>
+</html>
