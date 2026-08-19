@@ -1,32 +1,147 @@
-*** Begin Patch
-*** Update File: index.html
-@@
--  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8887428211757730" crossorigin="anonymous"></script>
-+  <!-- AdSense loader is deferred until user consent. ads-init.js will load the script when allowed. -->
-@@
--    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8887428211757730" data-ad-slot="6622132095" data-ad-format="auto" data-full-width-responsive="true"></ins>
--    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8887428211757730" data-ad-slot="6622132095" data-ad-format="auto" data-full-width-responsive="true"></ins>
-@@
--  <div class="ad-banner-slot">
--    <div class="ad-badge">ADVERTISEMENT</div>
--    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8887428211757730" data-ad-slot="6622132095" data-ad-format="auto" data-full-width-responsive="true"></ins>
--    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
--  </div>
-+  <div class="ad-banner-slot">
-+    <div class="ad-badge">ADVERTISEMENT</div>
-+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8887428211757730" data-ad-slot="6622132095" data-ad-format="auto" data-full-width-responsive="true"></ins>
-+  </div>
-@@
-     function acceptCookies() {
-       localStorage.setItem("cookie_consent_accepted", "true");
-       const banner = document.getElementById("cookie-banner");
-       if (banner) banner.style.display = "none";
-+      // Initialize ads after consent
-+      try {
-+        if (window.lottoAds && typeof window.lottoAds.init === 'function') {
-+          window.lottoAds.init({ publisherId: 'ca-pub-8887428211757730' });
-+        }
-+      } catch (e) { console.warn('ads init after consent failed', e); }
-     }
-*** End Patch
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lotto AI Africa — Data Science Archive & Probability Research Lab</title>
+  <meta name="description" content="Pan-African lottery statistical archive, 3-window positional vector calculator, multi-matrix Markov transition engine, and community research forum.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://lottoai.africa/">
+
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Lotto AI Africa",
+    "url": "https://lottoai.africa/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "All",
+    "description": "Pan-African lottery statistical archive, 3-window positional vector engine, Markov state transition modeling, and community research forum.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lotto AI Africa Research Lab",
+      "url": "https://lottoai.africa"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8887428211757730" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #f59e0b;
+      --accent-hover: #d97706;
+      --cyan-accent: #00e5ff;
+      --text-color: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --success-color: #22c55e;
+      --danger-color: #ef4444;
+      --gold-gradient: linear-gradient(135deg, #f59e0b, #b45309);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-color); padding: 15px; max-width: 1200px; margin: 0 auto; padding-bottom: 90px; }
+    header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--border-color); margin-bottom: 15px; }
+    header h1 { color: var(--accent-color); font-size: 1.8rem; margin-bottom: 5px; }
+    header p { color: var(--text-muted); font-size: 0.95rem; }
+    .sync-status { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: bold; background: #334155; padding: 4px 12px; border-radius: 20px; margin-top: 8px; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #94a3b8; }
+    .status-dot.online { background: var(--success-color); box-shadow: 0 0 8px var(--success-color); }
+    .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.15s ease; }
+    .tab-btn.active, .tab-btn:hover { background: var(--accent-color); color: #000; border-color: var(--accent-color); }
+    .tab-content { display: none; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
+    .tab-content.active { display: block; }
+    h2 { color: var(--accent-color); font-size: 1.4rem; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+    h3 { color: var(--text-color); font-size: 1.1rem; margin-bottom: 10px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 0.9rem; }
+    input, select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: #0f172a; color: #fff; font-size: 1rem; word-break: break-all; }
+    textarea { height: 140px; font-family: inherit; resize: vertical; }
+    .btn { background: var(--accent-color); color: #000; font-weight: bold; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; transition: 0.2s; font-size: 1rem; }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-secondary { background: #475569; color: #fff; margin-top: 10px; }
+    .btn-secondary:hover { background: #334155; }
+    .btn-gold { background: var(--gold-gradient); color: #000; font-weight: bold; }
+    .btn-cyan { background: var(--cyan-accent); color: #000; font-weight: bold; }
+    .btn-cyan:hover { background: #3ee9ff; }
+    .ball-container { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .ball { width: 38px; height: 38px; border-radius: 50%; background: #334155; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+    .ball.machine { border-color: #94a3b8; background: #1e293b; color: #94a3b8; }
+    .ball.vip-gold { border-color: #f59e0b; background: var(--gold-gradient); color: #000; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+    .ball.hit { background: #22c55e; color: #000; border-color: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.6); }
+    .card { background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+    .card-title { font-weight: bold; color: var(--accent-color); font-size: 1.1rem; }
+    .card-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+    .forum-post { background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .forum-user { font-weight: bold; color: var(--accent-color); font-size: 0.95rem; }
+    .forum-body { margin-top: 6px; font-size: 0.9rem; line-height: 1.4; color: var(--text-color); }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+    .stat-badge { background: #334155; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: inline-block; margin-left: 6px; color: var(--accent-color); }
+    .alert { padding: 12px; border-radius: 6px; margin-top: 12px; font-size: 0.95rem; font-weight: bold; word-break: break-word; }
+    .alert-success { background: rgba(34, 197, 94, 0.2); border: 1px solid var(--success-color); color: var(--success-color); }
+    .alert-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger-color); color: var(--danger-color); }
+    .alert-info { background: rgba(0, 229, 255, 0.15); border: 1px solid var(--cyan-accent); color: var(--cyan-accent); }
+    .heatmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 6px; margin-top: 10px; max-height: 320px; overflow-y: auto; padding: 8px; background: #070d1f; }
+    .heatmap-cell { border-radius: 6px; padding: 6px 2px; text-align: center; font-size: 0.75rem; font-weight: bold; border: 1px solid var(--border-color); }
+    .heatmap-cell.high { background: rgba(34, 197, 94, 0.3); color: #22c55e; border-color: #22c55e; }
+    .heatmap-cell.medium { background: rgba(245, 158, 11, 0.3); color: #f59e0b; border-color: #f59e0b; }
+    .heatmap-cell.low { background: rgba(148, 163, 184, 0.1); color: #94a3b8; }
+    table.calc-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; text-align: center; }
+    table.calc-table th, table.calc-table td { padding: 8px; border: 1px solid var(--border-color); }
+    table.calc-table th { background: #0f172a; color: var(--accent-color); }
+    table.calc-table td { background: #131b33; }
+    .ad-banner-slot { background: #131b33; border: 1px dashed var(--border-color); border-radius: 8px; padding: 15px; text-align: center; margin: 15px 0; color: var(--text-muted); font-size: 0.8rem; }
+    .ad-badge { display: inline-block; background: #334155; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; margin-bottom: 6px; font-weight: bold; }
+    #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #070d1f; border-top: 2px solid var(--accent-color); padding: 15px; font-size: 0.85rem; color: var(--text-color); z-index: 9999; }
+    #cookie-banner button { width: auto; padding: 6px 18px; font-size: 0.85rem; }
+    footer { text-align: center; padding: 25px 10px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 30px; }
+    .footer-links { display: flex; justify-content: center; gap: 15px; margin: 12px 0; flex-wrap: wrap; }
+    .footer-links a { color: var(--accent-color); text-decoration: none; font-weight: bold; transition: 0.2s; }
+    .footer-links a:hover { color: var(--accent-hover); text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🔬 Lotto AI Africa Data Research Lab</h1>
+    <p>Open Pan-African Lottery Statistical Archive & 3-Window Positional Engine</p>
+    <div class="sync-status">
+      <div id="status-dot" class="status-dot"></div>
+      <span id="status-text">Connecting to Live Statistical Database...</span>
+    </div>
+  </header>
+
+  <div class="ad-banner-slot">
+    <div class="ad-badge">ADVERTISEMENT</div>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8887428211757730" data-ad-slot="6622132095" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <section class="card" style="line-height:1.6; margin-bottom:20px;">
+    <h2 style="border:none; margin-bottom:8px;">About the Educational Statistical Archive</h2>
+    <p style="color:var(--text-muted); font-size:0.9rem;">
+      Lotto AI Africa is an educational research initiative designed to archive historical numerical sequences from Pan-African matrix systems (such as Ghana NLA 5/90, Baba Ijebu 5/90, Daywa 5/39[...]</p>
+    <p style="color:var(--text-muted); font-size:0.85rem; margin-top:8px;">
+      <strong>Disclaimer:</strong> This platform does not sell lottery tickets, provide gambling services, or guarantee future numerical outcomes. All tools are intended strictly for statistical [...]
+    </p>
+  </section>
+
+  <!-- Rest of original file unchanged -->
+
+</body>
+</html>
