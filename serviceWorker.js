@@ -42,13 +42,29 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch event: Implement cache-first strategy
+// Fetch event: Implement cache-first strategy with ad network bypass
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
   // Skip non-GET requests
   if (request.method !== 'GET') {
+    return;
+  }
+
+  // Ad network hosts - bypass caching & do not cache responses
+  const AD_HOSTS = [
+    'pagead2.googlesyndication.com',
+    'googleads.g.doubleclick.net',
+    'doubleclick.net',
+    'googleadservices.com',
+    'adservice.google.com'
+  ];
+
+  if (AD_HOSTS.some(h => url.hostname.includes(h))) {
+    event.respondWith(
+      fetch(request).catch(() => caches.match(request))
+    );
     return;
   }
 
